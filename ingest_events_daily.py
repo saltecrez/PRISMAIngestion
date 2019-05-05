@@ -2,8 +2,8 @@
 # E. Londero, June 2018
 # contact elisa.londero@inaf.it
 
-# This script can be used for the daily ingestion 
-# of event files (PRISMA project)
+# This script is supposed to be used for the daily 
+# ingestion of event files (PRISMA project)
 
 import time
 import sys
@@ -11,79 +11,98 @@ import os
 import shutil
 import ntpath
 import datetime
-import MySQLdb
-import re
-import subprocess
-import pdb
-from glob import glob
-from datetime import date,datetime,timedelta
-from shutil import Error
-from os.path import isfile,join
-from astropy.io import fits
-from subprocess import call
+import json
 
-# pahts to relevant working folders
-event_path='/mnt/newdata/'
-processing_path='/mnt/copy_events/'
-already_ingested_file='/home/ia2user/bin/eventi/already_ingested.txt'
-logfile='/home/ia2user/bin/eventi/log.txt'
-ingestion_path='/mnt/RDI/indirFITSprisma/'
-thumb_path='/mnt/storage_prisma/Thumbnails/'
+#import MySQLdb
+#import re
+#import subprocess
+#import pdb
+#from datetime import *
+#from glob import glob
+##from shutil import Error
+#from os.path import isfile,join
+##from astropy.io import fits
+#from subprocess import call
 
-filelog=open(logfile,'a')
+# Load input file defining the paths
+CWD=os.getcwd()
+def readJson(filename):
+    JSON_CONFIG_FILE_PATH='%s/%s' % (CWD, 'config.json')
+    CONFIG_PROPERTIES={}
+    try:
+        with open(JSON_CONFIG_FILE_PATH) as data_file:
+            CONFIG_PROPERTIES=json.load(data_file)
+        return CONFIG_PROPERTIES
+    except IOError as e:
+            print e 
+            print 'IOError: Unable to open config.json. Terminating execution.'
+            exit(1)
 
-# define the time interval for which you
-# want to do the events check
-# in this case: today, yesterday and day before yesterday
-month=datetime.now().strftime('%m')
-year=datetime.now().year
-today=datetime.now().strftime('%d')
-yester_day=(date.today()-timedelta(1)).strftime('%d')
-yester_month=(date.today()-timedelta(1)).strftime('%m')
-yester_year=(date.today()-timedelta(1)).strftime('%Y')
-dby_day=(date.today()-timedelta(2)).strftime('%d')
-dby_month=(date.today()-timedelta(2)).strftime('%m')
-dby_year=(date.today()-timedelta(2)).strftime('%Y')
+cnf = readJson('config.json') 
+filelog=open(cnf['logfile'],'a')
 
-date_today=str(year)+str(month)+str(today)+'T'
-date_yesterday=str(yester_year)+str(yester_month)+str(yester_day)+'T'
-date_dby=str(dby_year)+str(dby_month)+str(dby_day)+'T'
+# Date interval range
+def formatDate(date):
+    mylist = []
+    mylist.append(date)
+    a=str(mylist[0])
+    newdate=a.replace('-', '')
+    return newdate
 
-os.chdir(event_path)
+today=formatDate(datetime.date.today())+'T'
+yester=formatDate(datetime.date.today())+'T'
+dby=formatDate(datetime.date.today())+'T'
 
-t = list(glob(event_path+'/'+str(date_today)+'*/'))
-y = list(glob(event_path+'/'+str(date_yesterday)+'*/'))
-dby = list(glob(event_path+'/'+str(date_dby)+'*/'))
+# Read foreign and italian staions list
+def readStations(filename):
+    filepath='%s/%s' % (CWD, filename)
+    mylist = []
+    try:
+        with open(filepath, 'r') as filehandle:
+            for line in filehandle:
+               # remove linebreak which is the last character of the string
+               currentPlace = line[:-1]
+               mylist.append(currentPlace)
+        return mylist
+    except IOError as e:
+        print e
+        print 'IOError: Unable to open stations list file. Terminating execution.'
+        exit(1)
+
+foreign_stations = readStations('foreign_stations.txt')
+italian_stations = readStations('italian_stations.txt')
+
+os.chdir(cnf['event_path'])
+
+# Create event paths
+t = list(glob(cnf['event_path']+'/'+str(date_today)+'*/'))
+y = list(glob(cnf['event_path']+'/'+str(date_yesterday)+'*/'))
+dby = list(glob(cnf['event_path']+'/'+str(date_dby)+'*/'))
 check_dates_list=t+y+dby
 
 # read the file with the list of the 
 # already ingested events
-with open(already_ingested_file) as f:
+f = open(cnf['already_ingested_file'],'a')
+with open(cnf['already_ingested_file']) as f:
 	file_content = f.readlines()
 file_content = [x.strip() for x in file_content]
 f.close()
 
 # Copy files from /mnt/newdata to 
 # /mnt/copy_events in order to be processed
-f = open(already_ingested_file,'a')
 for i in check_dates_list:
 	base=os.path.basename(os.path.splitext(os.path.normpath(i))[0])
 	if base in file_content:
 		pass
 	else:
 		try:
-			shutil.copytree(i,os.path.join(processing_path,base),symlinks=True)
+			shutil.copytree(i,os.path.join(cnf['processing_path'],base),symlinks=True)
 			f.write(base+"\n") 
 		except IOError, e:
 			filelog.write("Unable to copy directory %s" % e)
 f.close()
 
-a = list(glob(processing_path+'/*/'))
-
-# list of foreign stations;
-# the stations in this list 
-# are not archived
-foreign_stations = ['BEAUMONTLESVALENCE','HYERES','LESANGLES','PONTARLIER','STRASBOURG','AIXENPROVENCE','BELFORT','BESANCON','BIGUGLIA','CHALON','CHARLEVILLE','GRENOBLES','MARSEILLE','GUZET','GLUXENGLENNE','LEVERSOUD','MARIGNY','MIGENNES','ORSAY','PORTOVECCHIO','REIMS','SAINTLUPICIN','SALONDEPROVENCE','TROYES','TALENCE','CHATILLON','GRENOBLE','HOCHFELDEN','LYON','NOORDWIJK','OHP','ONETLECHATEAU','PICDUMIDI','QUERQUEVILLE','RIODEJANEIRO','SUTRIEU','BARCELONETTE','CAUSSOLS','GLUX','VALCOURT','ANGOULEME','COULOUNIEIX','EPINAL','MONTSEC','OSENBACH','URANOSCOPE','WIMEREUX','LEBLEYMARD','AUBUSSON','MOULINS','ROANNE','SAINTBONNETELVERT','SAINTJULIENDUPINET','CAEN','ARRAS','AURILLAC','BREST','BUCURESTI','CARCASSONNE','LAVAL','MANTET','MAUROUX','NANCAY','NANTES','NARBONNE','PUYDEDOME','ROCHECHOUART','TAUXIGNY','TOULOUSE','WIEN','BRUXELLES','CHAPELLEAUXLYS','ANGERS','OOSTKAPELLE','PARISOBSERVATOIRE','RENNES','VANNES','SARRALBE','ALBI','CAPPELLELAGRANDE','CAVARC','PIERRES','HENDAYE','SABRES','LILLE','KETZUR','MONTPELLIER','BELLOULETRICHARD','OLDENBURG','SAINTLUC','VANDOEUVRELESNANCY','DAX','ARETTE','CAHORS','MAUBEUGE','LEMANS','AJACCIO','DIJON','SEYSDORF','PLEUMEURBODOU','LEMANS','ROUEN','PARISMNHN','VIQUES']
+a = list(glob(cnf['processing_path']+'/*/'))
 
 # file processing in /mnt/copy_events
 # add the EVENT key to the fits header 
@@ -109,7 +128,7 @@ for i in a:
 				last_jpg=os.path.basename(os.path.normpath(d[0]))
 				jpg_renamed=station_full+'.jpg'
 				try:
-					shutil.copy(last_jpg,os.path.join(thumb_path,jpg_renamed))
+					shutil.copy(last_jpg,os.path.join(cnf['thumb_path'],jpg_renamed))
 				except IOError, e:
 					filelog.write("Unable to copy file %s" % e)
                 	c = glob(j+"/*.fit")
@@ -128,7 +147,7 @@ for i in a:
 				list_targz.append(zipped)
 				last_zipped_station=os.path.basename(os.path.normpath(zipped))
 				try:
-                                	shutil.copy(zipped,os.path.join(ingestion_path,last_zipped_station))			
+                                	shutil.copy(zipped,os.path.join(cnf['ingestion_path'],last_zipped_station))			
 				except IOError, e:
 					filelog.write("Unable to copy file %s" % e)
 

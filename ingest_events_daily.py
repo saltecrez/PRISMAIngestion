@@ -12,20 +12,21 @@ import shutil
 import ntpath
 import datetime
 import json
-
-#import MySQLdb
-#import re
-#import subprocess
-#import pdb
-#from datetime import *
-#from glob import glob
-##from shutil import Error
-#from os.path import isfile,join
-##from astropy.io import fits
-#from subprocess import call
+from glob import glob
+from os.path import isfile,isdir
+from datetime import *
+import MySQLdb
+import re
+import subprocess
+import pdb
+from shutil import Error
+from os.path import join
+from astropy.io import fits
+from subprocess import call
 
 # Load input file defining the paths
 CWD=os.getcwd()
+
 def readJson(filename):
     JSON_CONFIG_FILE_PATH='%s/%s' % (CWD, 'config.json')
     CONFIG_PROPERTIES={}
@@ -53,7 +54,7 @@ today=formatDate(datetime.date.today())+'T'
 yester=formatDate(datetime.date.today())+'T'
 dby=formatDate(datetime.date.today())+'T'
 
-# Read foreign and italian staions list
+# Read foreign and italian stations list
 def readStations(filename):
     filepath='%s/%s' % (CWD, filename)
     mylist = []
@@ -75,10 +76,10 @@ italian_stations = readStations('italian_stations.txt')
 os.chdir(cnf['event_path'])
 
 # Create event paths
-t = list(glob(cnf['event_path']+'/'+str(date_today)+'*/'))
-y = list(glob(cnf['event_path']+'/'+str(date_yesterday)+'*/'))
-dby = list(glob(cnf['event_path']+'/'+str(date_dby)+'*/'))
-check_dates_list=t+y+dby
+t = list(glob(cnf['event_path']+'/'+str(today)+'*/'))
+y = list(glob(cnf['event_path']+'/'+str(yester)+'*/'))
+dby = list(glob(cnf['event_path']+'/'+str(dby)+'*/'))
+check_dates_list=t+y+dby 
 
 # read the file with the list of the 
 # already ingested events
@@ -86,30 +87,59 @@ f = open(cnf['already_ingested_file'],'a')
 with open(cnf['already_ingested_file']) as f:
 	file_content = f.readlines()
 file_content = [x.strip() for x in file_content]
-f.close()
+
+def getSize(path):
+
+    total_size = 0
+
+    if not isdir(path):
+        return 0
+
+    try:
+        for dirpath, dirnames, filenames in os.walk(path):
+           for f in filenames:
+                 fp = os.path.join(dirpath, f)
+                 if isfile(fp):
+                     total_size += os.path.getsize(fp)
+
+    except OSError as e:
+        print e
+        return None
+
+    return total_size
 
 # Copy files from /mnt/newdata to 
 # /mnt/copy_events in order to be processed
 for i in check_dates_list:
+	print i
 	base=os.path.basename(os.path.splitext(os.path.normpath(i))[0])
 	if base in file_content:
 		pass
 	else:
 		try:
-			shutil.copytree(i,os.path.join(cnf['processing_path'],base),symlinks=True)
+			size_before = getSize(i)
+			dest=os.path.join(cnf['processing_path'],base)
+			shutil.copytree(i,os.path.join(dest),symlinks=True)
+			size_after = getSize(i)
+			size_dest=getSize(dest)
+			if size_before==size_after==size_dest:
+				pass
+			else:
+				break
 			f.write(base+"\n") 
 		except IOError, e:
+			print "errore"
 			filelog.write("Unable to copy directory %s" % e)
 f.close()
 
 a = list(glob(cnf['processing_path']+'/*/'))
 
-# file processing in /mnt/copy_events
-# add the EVENT key to the fits header 
-# set the value of the EVENT key
-# recreate a tar file
-# copy the *tar.gz to the ingestion folder
-# copy the thumbnail to the thumbnail folder
+ file processing in /mnt/copy_events
+ add the EVENT key to the fits header 
+ set the value of the EVENT key
+ recreate a tar file
+ copy the *tar.gz to the ingestion folder
+ copy the thumbnail to the thumbnail folder
 list_targz=[]
 for i in a:
         last=os.path.basename(os.path.normpath(i))

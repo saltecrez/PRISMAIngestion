@@ -1,6 +1,0 @@
-event_path,/mnt/newdata/
-processing_path,/mnt/copy_events/
-already_ingested_file,/home/ia2user/bin/eventi/already_ingested.txt
-logfile,/home/ia2user/bin/eventi/log.txt
-ingestion_path,/mnt/RDI/indirFITSprisma
-thumb_path,/mnt/storage_prisma/Thumbnails/

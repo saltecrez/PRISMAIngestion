@@ -1,9 +1,13 @@
-# /usr/bin/env python
-# E. Londero, June 2018
-# contact elisa.londero@inaf.it
+#!/usr/bin/env python
 
-# This script is supposed to be used for the daily 
-# ingestion of event files (PRISMA project)
+__author__ = "Elisa Londero"
+__email__ = "elisa.londero@inaf.it"
+__date__ = "June 2018"
+
+'''
+   This script is supposed to be used for the daily 
+   ingestion of event files (PRISMA project)
+'''
 
 import time
 import sys
@@ -11,10 +15,14 @@ import os
 import shutil
 import ntpath
 import datetime
-import json
+import subprocess
 from glob import glob
+from datetime import timedelta
 from os.path import isfile,isdir
-from datetime import *
+from readJson import readJson
+from formatDate import formatDate
+from readStations import readStations
+from getSize import getSize
 import MySQLdb
 import re
 import subprocess
@@ -24,122 +32,72 @@ from os.path import join
 from astropy.io import fits
 from subprocess import call
 
-# Load input file defining the paths
-CWD=os.getcwd()
+# Load input file 
+CWD = os.getcwd()
+cnf = readJson('config.json',CWD) 
 
-def readJson(filename):
-    JSON_CONFIG_FILE_PATH='%s/%s' % (CWD, 'config.json')
-    CONFIG_PROPERTIES={}
-    try:
-        with open(JSON_CONFIG_FILE_PATH) as data_file:
-            CONFIG_PROPERTIES=json.load(data_file)
-        return CONFIG_PROPERTIES
-    except IOError as e:
-            print e 
-            print 'IOError: Unable to open config.json. Terminating execution.'
-            exit(1)
+# Open logfile 
+filelog = open(cnf['logfile'],'a')
+intercopy = open(cnf['intercopy'],'a')
 
-cnf = readJson('config.json') 
-filelog=open(cnf['logfile'],'a')
-
-# Date interval range
-def formatDate(date):
-    mylist = []
-    mylist.append(date)
-    a=str(mylist[0])
-    newdate=a.replace('-', '')
-    return newdate
-
-today=formatDate(datetime.date.today())+'T'
-yester=formatDate(datetime.date.today())+'T'
-dby=formatDate(datetime.date.today())+'T'
+# Set date interval range
+today = formatDate(datetime.date.today()) + 'T'
+yester = formatDate(datetime.date.today() - timedelta(days=1)) + 'T'
+dby = formatDate(datetime.date.today() - timedelta(days=2)) + 'T'
 
 # Read foreign and italian stations list
-def readStations(filename):
-    filepath='%s/%s' % (CWD, filename)
-    mylist = []
-    try:
-        with open(filepath, 'r') as filehandle:
-            for line in filehandle:
-               # remove linebreak which is the last character of the string
-               currentPlace = line[:-1]
-               mylist.append(currentPlace)
-        return mylist
-    except IOError as e:
-        print e
-        print 'IOError: Unable to open stations list file. Terminating execution.'
-        exit(1)
+foreign_stations = readStations('foreign_stations.txt',CWD)
+italian_stations = readStations('italian_stations.txt',CWD)
 
-foreign_stations = readStations('foreign_stations.txt')
-italian_stations = readStations('italian_stations.txt')
-
+# cd to ingestion directory
 os.chdir(cnf['event_path'])
 
-# Create event paths
-t = list(glob(cnf['event_path']+'/'+str(today)+'*/'))
-y = list(glob(cnf['event_path']+'/'+str(yester)+'*/'))
-dby = list(glob(cnf['event_path']+'/'+str(dby)+'*/'))
-check_dates_list=t+y+dby 
+# Create event paths 
+t = list(glob(cnf['event_path'] + '/'+str(today) + '*/'))
+y = list(glob(cnf['event_path'] + '/'+str(yester) + '*/'))
+dby = list(glob(cnf['event_path'] + '/'+str(dby) + '*/'))
+check_dates_list = set(t + y + dby)
 
 # read the file with the list of the 
-# already ingested events
+# already copied events
 f = open(cnf['already_ingested_file'],'a')
 with open(cnf['already_ingested_file']) as f:
 	file_content = f.readlines()
 file_content = [x.strip() for x in file_content]
 
-def getSize(path):
-
-    total_size = 0
-
-    if not isdir(path):
-        return 0
-
-    try:
-        for dirpath, dirnames, filenames in os.walk(path):
-           for f in filenames:
-                 fp = os.path.join(dirpath, f)
-                 if isfile(fp):
-                     total_size += os.path.getsize(fp)
-
-    except OSError as e:
-        print e
-        return None
-
-    return total_size
-
 # Copy files from /mnt/newdata to 
 # /mnt/copy_events in order to be processed
 for i in check_dates_list:
-	print i
-	base=os.path.basename(os.path.splitext(os.path.normpath(i))[0])
+	base = os.path.basename(os.path.splitext(os.path.normpath(i))[0])
 	if base in file_content:
 		pass
 	else:
 		try:
 			size_before = getSize(i)
-			dest=os.path.join(cnf['processing_path'],base)
-			shutil.copytree(i,os.path.join(dest),symlinks=True)
+			dest = os.path.join(cnf['processing_path'],base)
+			shutil.copytree(i,os.path.join(dest),symlinks = True)
 			size_after = getSize(i)
-			size_dest=getSize(dest)
-			if size_before==size_after==size_dest:
+			size_dest = getSize(dest)
+			if size_before == size_after == size_dest:
+				f.write(base + "\n")
 				pass
 			else:
+				intercopy.write("The copy of the folder " + base + " was interrupted")				
+                                bashCommand = "mutt -s 'Folder copy interrupted' -c elisa.londero@inaf.it < " + cnf['intercopy'] 
+				os.system(bashCommand)
 				break
-			f.write(base+"\n") 
 		except IOError, e:
-			print "errore"
 			filelog.write("Unable to copy directory %s" % e)
 f.close()
 
-a = list(glob(cnf['processing_path']+'/*/'))
+a = list(glob(cnf['processing_path'] + '/*/'))
 
- file processing in /mnt/copy_events
- add the EVENT key to the fits header 
- set the value of the EVENT key
- recreate a tar file
- copy the *tar.gz to the ingestion folder
- copy the thumbnail to the thumbnail folder
+# file processing in /mnt/copy_events
+# add the EVENT key to the fits header 
+# set the value of the EVENT key
+# recreate a tar file
+# copy the *tar.gz to the ingestion folder
+# copy the thumbnail to the thumbnail folder
 list_targz=[]
 for i in a:
         last=os.path.basename(os.path.normpath(i))

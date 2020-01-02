@@ -1,5 +1,9 @@
 {
-	"event_path": "/mnt/newdata/",
+	"eventpath": "/mnt/newdata/",
+	"dbhost": "localhost",
+	"dbuser": "archa",
+	"dbpwd": "Archa123",
+	"dbschema": "prisma_archive_database",
 	"processing_path": "/mnt/copy_events/",
 	"already_ingested_file": "/home/ia2user/bin/eventi/already_ingested.txt",
 	"logfile": "/home/ia2user/bin/eventi/log.txt",

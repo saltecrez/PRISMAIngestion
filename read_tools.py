@@ -31,3 +31,16 @@ def read_csv(filename,logfile):
         return rowlist
     except IOError as e:
         logfile.write('%s -- IOError: %s \n' % (datetime.now(),e))
+
+
+def read_txt(filename,cwd,logfile):
+    filepath = '%s/%s' % (cwd,filename)
+    mylist = []
+    try:
+        with open(filepath,'r') as filehandle:
+            for line in filehandle:
+               currentPlace = line[:-1]
+               mylist.append(currentPlace)
+        return mylist
+    except IOError as e:
+	logfile.write('%s -- IOError: %s \n' % (datetime.now(),e))

@@ -8,5 +8,6 @@
 	"dbpwd": "Archa123",
 	"dbname": "prisma_archive_database",
 	"destfolder": "/mnt/copy_events/",
-	"intercopy": "/home/ia2user/bin/test/PRISMAIngestion/interrupted_copy.txt"
+	"stations": "foreign_stations.txt",
+	"thumbpath": "/mnt/copy_events/thumb"
 }

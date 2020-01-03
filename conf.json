@@ -1,11 +1,12 @@
 {
+	"email": "elisa.londero@inaf.it",
+	"sender": "ia2-prisma@localhost",
+	"smtphost": "localhost",	
 	"eventpath": "/mnt/newdata/",
 	"dbhost": "localhost",
 	"dbuser": "archa",
 	"dbpwd": "Archa123",
-	"dbschema": "prisma_archive_database",
-	"processing_path": "/mnt/copy_events/",
-	"already_ingested_file": "/home/ia2user/bin/eventi/already_ingested.txt",
-	"logfile": "/home/ia2user/bin/eventi/log.txt",
+	"dbname": "prisma_archive_database",
+	"destfolder": "/mnt/copy_events/",
 	"intercopy": "/home/ia2user/bin/test/PRISMAIngestion/interrupted_copy.txt"
 }

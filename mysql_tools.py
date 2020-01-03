@@ -12,22 +12,23 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy import exc
 
 
-def mysql_connection(host,user,password,schema,logfile):
+def mysql_connection(host,user,password,dbname,logfile):
     try:
-        db = pymysql.connect(host,user,password,schema)
+        db = pymysql.connect(host,user,password,dbname)
         cur = db.cursor()
         return cur, db
     except pymysql.Error as e:
         logfile.write('%s -- pymysql.Error: %s \n' % (datetime.now(),e))
 
 
-def mysql_session(user,pwd,host,dbname):
+def mysql_session(user,pwd,host,dbname,logfile):
     try:
         engine = create_engine('mysql+pymysql://' + user + ':' + pwd + '@' + host + '/'  + dbname)
         db_session = sessionmaker(bind=engine)
         return db_session
     except exc.SQLAlchemyError as e:
 	logfile.write('%s -- sqlalchemy.Error: %s \n' % (datetime.now(),e))
+
 
 def select_event(session,table_object,s,logfile):
     try:
@@ -39,4 +40,4 @@ def select_event(session,table_object,s,logfile):
 	   else:
 	       return False
     except exc.SQLAlchemyError as e:
-        logfile.write('%s -- pymysql.Error: %s \n' % (datetime.now(),e))
+        logfile.write('%s -- sqlalchemy.Error: %s \n' % (datetime.now(),e))

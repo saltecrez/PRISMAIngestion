@@ -1,0 +1,11 @@
+# Compiled source #
+###################
+*.pyc
+# Logs and databases #
+######################
+logfile.txt
+
+dest/
+thumb/
+ivent/
+ingest/

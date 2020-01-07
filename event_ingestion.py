@@ -39,7 +39,7 @@ db_user = cnf['dbuser']; db_name = cnf['dbname']
 Session = mysql_session(db_user,db_pwd,db_host,db_name,logfile)
 session = Session()
 #
-dest_folder = cnf['destfolder']
+dest_folder = cnf['processfolder']
 for j in range(len(event_list)):
     event_archived = select_event(session,data_file,event_list[j],logfile)
     if not event_archived and event_list[j][0:4] == '2020':
@@ -57,7 +57,7 @@ for j in range(len(event_list)):
 #
 stations_file = cnf['stations']
 thumb_dest_folder = cnf['thumbpath']
-ingestion_folder = cnf['ingfolder']
+ingestion_folder = cnf['ingestfolder']
 foreign_stations_list = read_txt(stations_file,CWD,logfile) 
 events_to_process_path_list = glob(dest_folder + '/*')
 for i in events_to_process_path_list:
@@ -89,5 +89,11 @@ for i in events_to_process_path_list:
 		        shutil.copy(tar_filename+'.tar.gz',ingestion_folder)	
 		    except IOError as err:
 			logfile.write('%s -- IO.Error: %s \n' % (datetime.now(),err))
+		else:
+		    msg = 'Number of frames in the tar and in the original folder do not match'
+		    send_email(msg,recipient,sender,smtp_host,logfile)
+#
+for i in events_to_process_path_list:
+    shutil.rmtree(i)
 #
 logfile.close()

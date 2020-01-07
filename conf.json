@@ -2,13 +2,13 @@
 	"email": "elisa.londero@inaf.it",
 	"sender": "ia2-prisma@localhost",
 	"smtphost": "localhost",	
-	"eventpath": "/home/ia2user/workspace/development/ivent/",
+	"eventpath": "/mnt/newdata/",
 	"dbhost": "localhost",
 	"dbuser": "archa",
 	"dbpwd": "Archa123",
 	"dbname": "prisma_archive_database",
-	"destfolder": "/home/ia2user/workspace/development/dest/",
-	"ingfolder": "/home/ia2user/workspace/development/ingest/",
+	"processfolder": "/home/ia2user/workspace/development/dest/",
+	"ingestfolder": "/home/ia2user/workspace/development/ingest/",
 	"stations": "foreign_stations.txt",
 	"thumbpath": "/home/ia2user/workspace/development/thumb/"
 }

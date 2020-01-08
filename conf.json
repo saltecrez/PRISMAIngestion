@@ -7,8 +7,9 @@
 	"dbuser": "archa",
 	"dbpwd": "Archa123",
 	"dbname": "prisma_archive_database",
-	"processfolder": "/home/ia2user/workspace/development/dest/",
+	"processfolder": "/home/ia2user/workspace/development/preproc/",
 	"ingestfolder": "/home/ia2user/workspace/development/ingest/",
 	"stations": "foreign_stations.txt",
-	"thumbpath": "/home/ia2user/workspace/development/thumb/"
+	"thumbpath": "/home/ia2user/workspace/development/thumb/",
+	"temppath": "/home/ia2user/workspace/development/temp/"
 }

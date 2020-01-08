@@ -5,7 +5,6 @@
 ######################
 logfile.txt
 
-dest/
+preproc/
 thumb/
-ivent/
 ingest/

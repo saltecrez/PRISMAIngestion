@@ -6,7 +6,7 @@
 
 - **Requirements**:
     - pip install astropy
-    - pip install pymysql
+    - pip install sqlalchemy 
 
 - **Configuration parameters**:
     - "email": email address to be alerted in case of preprocessing failure

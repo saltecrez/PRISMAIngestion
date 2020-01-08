@@ -11,7 +11,7 @@ from os.path import isdir
 from datetime import datetime
 
 
-def folder_size(path):
+def folder_size(path,logfile):
     total_size = 0
     if not isdir(path):
         return 0

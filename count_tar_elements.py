@@ -10,7 +10,7 @@ import os
 
 def count_tar_elements(tarname,logfile):
     try:
-	cmd = 'tar -tzf ' + tarname + '.tar.gz | grep -vc "/$"' 
+	cmd = 'tar -tzf ' + tarname + ' | grep -vc "/$"' 
 	count = os.popen(cmd).read()
 	return count
     except subprocess.CalledProcessError as e:

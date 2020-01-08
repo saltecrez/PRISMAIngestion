@@ -2,7 +2,7 @@
 	"email": "elisa.londero@inaf.it",
 	"sender": "ia2-prisma@localhost",
 	"smtphost": "localhost",	
-	"eventpath": "/mnt/newdata/",
+	"eventfolder": "/mnt/newdata/",
 	"dbhost": "localhost",
 	"dbuser": "archa",
 	"dbpwd": "Archa123",
@@ -10,6 +10,6 @@
 	"processfolder": "/home/ia2user/workspace/development/preproc/",
 	"ingestfolder": "/home/ia2user/workspace/development/ingest/",
 	"stations": "foreign_stations.txt",
-	"thumbpath": "/home/ia2user/workspace/development/thumb/",
-	"temppath": "/home/ia2user/workspace/development/temp/"
+	"thumbsfolder": "/home/ia2user/workspace/development/thumb/",
+	"failurefolder": "/home/ia2user/workspace/development/temp/"
 }

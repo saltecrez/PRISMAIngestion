@@ -15,7 +15,7 @@ therefore I use the Unix command in this implementation'''
 
 def create_tarfile(outfile,source,logfile):
     try:
-	exit_code = subprocess.call(['tar', '-czvf', outfile + '.tar.gz', source])
+	exit_code = subprocess.call(['tar', '-czvf', outfile, source])
 	if exit_code == 0:
 	    return True
 	else:

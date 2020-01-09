@@ -8,7 +8,6 @@
         "dbpwd": "Archa123",
         "dbname": "metadata_prisma",
         "ingestfolder": "/home/ia2user/workspace/development/captures_preprocessor/ingest",
-        "thumbsfolder": "/home/ia2user/workspace/development/captures_preprocessor/thumb/",
-        "failurefolder": "/home/ia2user/workspace/development/captures_preprocessor/temp/"
+        "thumbsfolder": "/home/ia2user/workspace/development/captures_preprocessor/thumbs"
 }
 

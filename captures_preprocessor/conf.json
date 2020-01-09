@@ -1,0 +1,14 @@
+{
+        "email": "elisa.londero@inaf.it",
+        "sender": "ia2-prisma@localhost",
+        "smtphost": "localhost",
+        "camerasfolder": "/mnt/storage/",
+        "dbhost": "localhost",
+        "dbuser": "archa",
+        "dbpwd": "Archa123",
+        "dbname": "prisma_calib",
+        "ingestfolder": "/home/ia2user/workspace/development/captures_preprocessor/ingest/",
+        "thumbsfolder": "/home/ia2user/workspace/development/captures_preprocessor/thumb/",
+        "failurefolder": "/home/ia2user/workspace/development/captures_preprocessor/temp/"
+}
+

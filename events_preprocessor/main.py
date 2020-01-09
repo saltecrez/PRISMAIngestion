@@ -11,12 +11,10 @@ __date__ = "June 2018"
 
 import os
 import shutil
+import read_tools
+import mysql_tools
 from glob import glob
 from shutil import Error
-from read_tools import read_json
-from read_tools import read_txt
-from mysql_tools import mysql_session
-from mysql_tools import select_event
 from folder_size import folder_size 
 from table_objects import data_file
 from create_tarfile import create_tarfile
@@ -28,7 +26,7 @@ CWD = os.getcwd()
 logfile = open(CWD + '/' + "logfile.txt",'a')
 
 # Read from configuration file
-cnf = read_json('conf.json',CWD,logfile) 
+cnf = read_tools.read_json('conf.json',CWD,logfile) 
 event_path    = cnf['eventfolder'];   ingest_path    = cnf['ingestfolder']
 proc_path     = cnf['processfolder']; thumbs_path    = cnf['thumbsfolder']
 db_host       = cnf['dbhost'];        db_pwd         = cnf['dbpwd']
@@ -41,7 +39,7 @@ event_path_list = glob(event_path + '/*')
 event_list = [os.path.basename(i)[0:15] for i in event_path_list]
 
 # create mysql database session
-Session = mysql_session(db_user,db_pwd,db_host,db_name,logfile)
+Session = mysql_tools.mysql_session(db_user,db_pwd,db_host,db_name,logfile)
 session = Session()
 
 #####################################
@@ -50,7 +48,7 @@ session = Session()
 for j in range(len(event_list)):
 
     # find the elements in event_list that have already been archived 
-    archived_event = select_event(session,data_file,event_list[j],logfile)
+    archived_event = mysql_tools.select_event(session,data_file,event_list[j],logfile)
 
     # if event not yet found in DB, copy to preprocessing area 
     # calculate event folder size before and after copy 
@@ -77,7 +75,7 @@ for j in range(len(event_list)):
 #####################
 # events processing #
 #####################
-foreign_stations_list = read_txt(stations_file,CWD,logfile) 
+foreign_stations_list = read_tools.read_txt(stations_file,CWD,logfile) 
 events_to_process_path_list = glob(proc_path + '/*')
 
 for i in events_to_process_path_list:

@@ -1,4 +1,4 @@
-# PRISMAIngestion
+# Events preprocessor
 
 - **Goal**: Preprocessing of PRISMA events folders, sorted out and tar gzipped by station.
 

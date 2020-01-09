@@ -30,12 +30,12 @@ def mysql_session(user,pwd,host,dbname,logfile):
 	logfile.write('%s -- sqlalchemy.Error: %s \n' % (datetime.now(),e))
 
 
-def select_event(session,table_object,s,logfile):
+def select_EXPID(session,table_object,s,logfile):
     try:
         rows = session.query(table_object)
-        flt = rows.filter(table_object.event == s)
+        flt = rows.filter(table_object.EXP_ID == s)
 	for j in flt:
-	   if j.event:
+	   if j.EXP_ID:
 	       return True
 	   else:
 	       return False

@@ -5,7 +5,7 @@
 	"eventfolder": "/home/ia2user/workspace/development/events_preprocessor/event/",
 	"dbhost": "localhost",
 	"dbuser": "archa",
-	"dbpwd": "Archa123.",
+	"dbpwd": "Archa123",
 	"dbname": "prisma_archive_database",
 	"processfolder": "/home/ia2user/workspace/development/events_preprocessor/preproc/",
 	"ingestfolder": "/home/ia2user/workspace/development/events_preprocessor/ingest/",

@@ -32,10 +32,14 @@ cameras_path_list = glob(cameras_path + '/*/')
 # create mysql database session
 Session = mysql_tools.mysql_session(db_user,db_pwd,db_host,db_name,logfile)
 session = Session()
+valid_session = mysql_tools.validate_session(session)
+if valid_session:
+   pass
+else:
+    raise Exception('The DB session could not start. Check DB credentials used in the configuration file.')
 
 current_month = datetime.today().strftime('%Y%m')
 cameras_month_path = [i + current_month for i in cameras_path_list]
-
 
 for j in range(len(cameras_month_path)):
 

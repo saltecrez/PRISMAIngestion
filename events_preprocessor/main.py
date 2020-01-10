@@ -45,10 +45,10 @@ selected_event_list = event_string_reader(event_list)
 
 # create mysql database session
 Session = mysql_tools.mysql_session(db_user,db_pwd,db_host,db_name,logfile)
-valid_session = mysql_tools.validate_session(Session)
-
+session = Session()
+valid_session = mysql_tools.validate_session(session)
 if valid_session:
-    session = Session()
+   pass 
 else:
     raise Exception('The DB session could not start. Check DB credentials used in the configuration file.')
 

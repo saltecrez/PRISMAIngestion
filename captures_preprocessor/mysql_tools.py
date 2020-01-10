@@ -30,6 +30,14 @@ def mysql_session(user,pwd,host,dbname,logfile):
 	logfile.write('%s -- sqlalchemy.Error: %s \n' % (datetime.now(),e))
 
 
+def validate_session(session):
+    try:
+        connection = session.connection()
+        return True
+    except:
+        return False
+
+
 def select_EXPID(session,table_object,s,logfile):
     try:
         rows = session.query(table_object)

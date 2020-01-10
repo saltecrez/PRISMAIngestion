@@ -20,6 +20,7 @@ from table_objects import data_file
 from create_tarfile import create_tarfile
 from fits_handling import fits_add_key
 from count_tar_elements import count_tar_elements
+from event_string_reader import event_string_reader
 
 
 CWD = os.getcwd()
@@ -37,6 +38,7 @@ stations_file = cnf['stations'];      temp_path      = cnf['failurefolder']
 # folder synchronized with the French server 
 event_path_list = glob(event_path + '/*')
 event_list = [os.path.basename(i)[0:15] for i in event_path_list]
+selected_event_list = event_string_reader(event_list)
 
 # create mysql database session
 Session = mysql_tools.mysql_session(db_user,db_pwd,db_host,db_name,logfile)
@@ -45,17 +47,17 @@ session = Session()
 #####################################
 # copy events to preprocessing area #
 #####################################
-for j in range(len(event_list)):
+for j in range(len(selected_event_list)):
 
     # find the elements in event_list that have already been archived 
-    archived_event = mysql_tools.select_event(session,data_file,event_list[j],logfile)
+    archived_event = mysql_tools.select_event(session,data_file,selected_event_list[j],logfile)
 
     # if event not yet found in DB, copy to preprocessing area 
     # calculate event folder size before and after copy 
-    if not archived_event and event_list[j][0:4] >= '2019':
+    if not archived_event: 
 	size_at_origin = folder_size(event_path_list[j],logfile)
-	process_path = os.path.join(proc_path,event_list[j])
-	temporary_path = os.path.join(temp_path,event_list[j])
+	process_path = os.path.join(proc_path,selected_event_list[j])
+	temporary_path = os.path.join(temp_path,selected_event_list[j])
 	try:
 	    shutil.copytree(event_path_list[j],process_path,symlinks = True)
 	except shutil.Error as err:
@@ -65,7 +67,7 @@ for j in range(len(event_list)):
 	# compare size before and after copy
 	# if different send alert and move the folder to the failures directory
 	if size_at_origin != size_at_destination:
-	    msg = "Event alert: folder copied in " + proc_path + "not consistent with folder in " + event_path + "for event " + event_list[j]
+	    msg = "Event alert: folder copied in " + proc_path + "not consistent with folder in " + event_path + "for event " + selected_event_list[j]
 	    send_email(msg,recipient,sender,smtp_host,logfile)
 	    try:
 	        shutil.move(process_path,temporary_path)

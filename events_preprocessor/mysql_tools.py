@@ -25,9 +25,17 @@ def mysql_session(user,pwd,host,dbname,logfile):
     try:
         engine = create_engine('mysql+pymysql://' + user + ':' + pwd + '@' + host + '/'  + dbname)
         db_session = sessionmaker(bind=engine)
-        return db_session
+    	return db_session
     except exc.SQLAlchemyError as e:
 	logfile.write('%s -- sqlalchemy.Error: %s \n' % (datetime.now(),e))
+
+
+def validate_session(session):
+    try:
+        connection = session.connection()
+        return True
+    except:
+        return False
 
 
 def select_event(session,table_object,s,logfile):

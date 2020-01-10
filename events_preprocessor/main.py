@@ -16,6 +16,7 @@ import mysql_tools
 from glob import glob
 from shutil import Error
 from folder_size import folder_size 
+from send_email import send_email
 from table_objects import data_file
 from create_tarfile import create_tarfile
 from fits_handling import fits_add_key
@@ -33,6 +34,8 @@ proc_path     = cnf['processfolder']; thumbs_path    = cnf['thumbsfolder']
 db_host       = cnf['dbhost'];        db_pwd         = cnf['dbpwd']
 db_user       = cnf['dbuser'];        db_name        = cnf['dbname']
 stations_file = cnf['stations'];      temp_path      = cnf['failurefolder']
+smtp_host     = cnf['smtphost'];      sender         = cnf['sender']
+recipient     = cnf['email']; 
 
 # create events list from events available in the 
 # folder synchronized with the French server 
@@ -42,7 +45,12 @@ selected_event_list = event_string_reader(event_list)
 
 # create mysql database session
 Session = mysql_tools.mysql_session(db_user,db_pwd,db_host,db_name,logfile)
-session = Session()
+valid_session = mysql_tools.validate_session(Session)
+
+if valid_session:
+    session = Session()
+else:
+    raise Exception('The DB session could not start. Check DB credentials used in the configuration file.')
 
 #####################################
 # copy events to preprocessing area #
@@ -62,7 +70,7 @@ for j in range(len(selected_event_list)):
 	    shutil.copytree(event_path_list[j],process_path,symlinks = True)
 	except shutil.Error as err:
 	    logfile.write('%s -- shutil.Error: %s \n' % (datetime.now(),err))
-	size_at_destination = folder_size(process_path)
+	size_at_destination = folder_size(process_path,logfile)
 
 	# compare size before and after copy
 	# if different send alert and move the folder to the failures directory

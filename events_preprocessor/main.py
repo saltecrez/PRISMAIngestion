@@ -101,15 +101,15 @@ for i in events_to_process_path_list:
     station_names_list
 
     for j in range(len(station_names_list)):
-
         # if an Italian station is found:
         # rename its thumbnail and copy to thumbnail folder
 	if station_names_list[j] not in foreign_stations_list:
 	    thumbnail_path = glob(station_folders_path_list[j] + "/*-thumb.jpg")
-	    try:
-		shutil.copy(thumbnail_path[0],os.path.join(thumbs_path,station_fullnames_list[j] + '.jpg'))
-	    except IOError as err:
-		logfile.write('%s -- shutil.Error: %s \n' % (datetime.now(),err))
+	    if thumbnail_path:
+	        try:
+		    shutil.copy(thumbnail_path[0],os.path.join(thumbs_path,station_fullnames_list[j] + '.jpg'))
+	        except IOError as err:
+		    logfile.write('%s -- shutil.Error: %s \n' % (datetime.now(),err))
 
 	    # rename its FITS file and add the EVENT key
 	    # the value of the EVENT key corresponds to the event string  

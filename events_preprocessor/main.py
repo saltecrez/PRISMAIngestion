@@ -29,19 +29,21 @@ logfile = open(CWD + '/' + "logfile.txt",'a')
 
 # Read from configuration file
 cnf = read_tools.read_json('conf.json',CWD,logfile) 
-event_path    = cnf['eventfolder'];   ingest_path    = cnf['ingestfolder']
-proc_path     = cnf['processfolder']; thumbs_path    = cnf['thumbsfolder']
-db_host       = cnf['dbhost'];        db_pwd         = cnf['dbpwd']
-db_user       = cnf['dbuser'];        db_name        = cnf['dbname']
-stations_file = cnf['stations'];      temp_path      = cnf['failurefolder']
-smtp_host     = cnf['smtphost'];      sender         = cnf['sender']
+
+event_path    = cnf['eventfolder'];    ingest_path = cnf['ingestfolder']
+proc_path     = cnf['processfolder'];  thumbs_path = cnf['thumbsfolder']
+db_host       = cnf['dbhost'];         db_pwd      = cnf['dbpwd']
+db_user       = cnf['dbuser'];         db_name     = cnf['dbname']
+stations_file = cnf['stations'];       fail_path   = cnf['failurefolder']
+smtp_host     = cnf['smtphost'];       sender      = cnf['sender']
 recipient     = cnf['email']; 
 
 # create events list from events available in the 
 # folder synchronized with the French server 
-event_path_list = glob(event_path + '/*')
-event_list = [os.path.basename(i)[0:15] for i in event_path_list]
-selected_event_list = event_string_reader(event_list)
+all_event_path_list = glob(event_path + '/*')
+all_event_list = [os.path.basename(i)[0:18] for i in all_event_path_list]
+selected_event_list = event_string_reader(all_event_list)
+selected_event_path_list = [os.path.join(event_path,i) for i in selected_event_list]
 
 # create mysql database session
 Session = mysql_tools.mysql_session(db_user,db_pwd,db_host,db_name,logfile)
@@ -58,16 +60,17 @@ else:
 for j in range(len(selected_event_list)):
 
     # find the elements in event_list that have already been archived 
-    archived_event = mysql_tools.select_event(session,data_file,selected_event_list[j],logfile)
+    event_string = selected_event_list[j][0:15]
+    archived_event = mysql_tools.select_event(session,data_file,event_string,logfile)
 
     # if event not yet found in DB, copy to preprocessing area 
     # calculate event folder size before and after copy 
-    if not archived_event: 
-	size_at_origin = folder_size(event_path_list[j],logfile)
+    if not archived_event and selected_event_list[j][0:4] >= '2020': 
+	size_at_origin = folder_size(selected_event_path_list[j],logfile)
 	process_path = os.path.join(proc_path,selected_event_list[j])
-	temporary_path = os.path.join(temp_path,selected_event_list[j])
+	failure_path = os.path.join(fail_path,selected_event_list[j])
 	try:
-	    shutil.copytree(event_path_list[j],process_path,symlinks = True)
+	    shutil.copytree(selected_event_path_list[j],process_path,symlinks = True)
 	except shutil.Error as err:
 	    logfile.write('%s -- shutil.Error: %s \n' % (datetime.now(),err))
 	size_at_destination = folder_size(process_path,logfile)
@@ -78,7 +81,7 @@ for j in range(len(selected_event_list)):
 	    msg = "Event alert: folder copied in " + proc_path + "not consistent with folder in " + event_path + "for event " + selected_event_list[j]
 	    send_email(msg,recipient,sender,smtp_host,logfile)
 	    try:
-	        shutil.move(process_path,temporary_path)
+	        shutil.move(process_path,failure_path)
 	    except shutil.Error as err:
 		logfile.write('%s -- shutil.Error: %s \n' % (datetime.now(),err))
 
@@ -105,7 +108,7 @@ for i in events_to_process_path_list:
 	    try:
 		shutil.copy(thumbnail_path[0],os.path.join(thumbs_path,station_fullnames_list[j] + '.jpg'))
 	    except IOError as err:
-		logfile.write('%s -- IO.Error: %s \n' % (datetime.now(),err))
+		logfile.write('%s -- shutil.Error: %s \n' % (datetime.now(),err))
 
 	    # rename its FITS file and add the EVENT key
 	    # the value of the EVENT key corresponds to the event string  
@@ -138,7 +141,7 @@ for i in events_to_process_path_list:
 		        msg = 'Number of frames in the tar and in the original folder do not match'
 		        send_email(msg,recipient,sender,smtp_host,logfile)
 			try:
-			    shutil.move(tar_filename,temporary_path)
+			    shutil.move(tar_filename,failure_path)
 			except shutil.Error as err:
 			    logfile.write('%s -- shutil.Error: %s \n' % (datetime.now(),err))
 

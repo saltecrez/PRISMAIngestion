@@ -28,6 +28,7 @@ thumbs_path = cnf['thumbsfolder']
 
 # create captures folder list from the folder synchronized with the French server
 cameras_path_list = glob(cameras_path + '/*/')
+print cameras_path_list
 
 # create mysql database session
 Session = mysql_tools.mysql_session(db_user,db_pwd,db_host,db_name,logfile)
@@ -52,8 +53,8 @@ for j in range(len(cameras_month_path)):
 	jpg500_name = common_string + '-500x500.jpg'
 	jpg_name = common_string + '.jpg' 
 	final_destination_jpg = os.path.join(thumbs_path,jpg_name)
-	jpg_original_path =  cameras_month_path[j] + '/' + jpg500_name
-	if not os.path.exists(final_destination_jpg):
+	jpg_original_path = os.path.join(cameras_month_path[j],jpg500_name) 
+	if not os.path.exists(final_destination_jpg) and os.path.exists(jpg_original_path):
 	    try:
 		shutil.copy(jpg_original_path,final_destination_jpg)
 	    except shutil.Error as err:

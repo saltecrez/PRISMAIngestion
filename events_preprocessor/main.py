@@ -98,6 +98,7 @@ for i in events_to_process_path_list:
     station_folders_path_list = glob(i + '/*/')
     station_fullnames_list = [os.path.basename(os.path.normpath(k)) for k in station_folders_path_list]
     station_names_list = [k[:-19] for k in station_fullnames_list]
+    station_names_list
 
     for j in range(len(station_names_list)):
 
@@ -116,7 +117,7 @@ for i in events_to_process_path_list:
 	    if fits_path:
 		fits_filename = os.path.basename(fits_path[0])
 		fits_path_renamed = station_folders_path_list[j] + 'Sum_' + fits_filename 
-		event_string = os.path.basename(os.path.normpath(i))
+		event_string = os.path.basename(os.path.normpath(i))[0:15]
 		os.rename(fits_path[0],fits_path_renamed)
 		fits_add_key(fits_path_renamed,'EVENT',event_string,'Event label',logfile)
 		tar_filename = station_fullnames_list[j] + '.tar.gz' 

@@ -146,8 +146,7 @@ for i in events_to_process_path_list:
 			except shutil.Error as err:
 			    logfile.write('%s -- shutil.Error: %s \n' % (datetime.now(),err))
 
-# Remove the folders in the preprocessing area
-for i in events_to_process_path_list:
+    # Remove the folder in the preprocessing area
     shutil.rmtree(i)
 
 logfile.close()

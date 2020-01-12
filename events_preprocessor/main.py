@@ -136,6 +136,7 @@ for i in events_to_process_path_list:
 		    if tar_elements == folder_elements:
 		        try:
 		            shutil.copy(tar_filename,ingest_path)	
+			    logfile.write('%s -- Event ingestion: %s \n' % (datetime.now(),event_string))
 		        except IOError as err:
 			    logfile.write('%s -- IO.Error: %s \n' % (datetime.now(),err))
 		    else:

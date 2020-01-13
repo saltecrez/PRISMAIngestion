@@ -62,13 +62,17 @@ else:
 foreign_stations_list = read_tools.read_txt(stations_file,CWD,logfile) 
 ignore_list = [i + '*' for i in foreign_stations_list] 
 for j in range(len(selected_event_list)):
-
     # find the elements in event_list that have already been archived 
     event_string = selected_event_list[j][0:15]
     archived_event = mysql_tools.select_event(session,data_file,event_string,logfile)
 
+    # find fits file
+    station_folders_path_list = glob(selected_event_path_list[j] + '/*/')
+    for k in station_folders_path_list:
+	fit_path = glob(k + "/*.fit")
+
     # if event not yet found in DB, copy to preprocessing area 
-    if not archived_event and selected_event_list[j][0:4] >= '2020': 
+    if not archived_event and fit_path and selected_event_list[j][0:4] >= '2020': 
 	process_path = os.path.join(proc_path,selected_event_list[j])
 	try:
 	    # do not copy foreign stations to preprocessing area

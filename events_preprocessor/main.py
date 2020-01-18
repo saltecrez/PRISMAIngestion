@@ -52,7 +52,7 @@ Session = mysql_tools.mysql_session(db_user,db_pwd,db_host,db_name,logfile)
 session = Session()
 valid_session = mysql_tools.validate_session(session)
 if valid_session:
-   pass 
+    pass 
 else:
     raise Exception('The DB session could not start. Check DB credentials used in the configuration file.')
 
@@ -143,7 +143,7 @@ for j in range(len(selected_event_list)):
 			    except shutil.Error as err:
 				logfile.write('%s -- shutil.Error: %s \n' % (datetime.now(),err))
 
-# Remove the folder from the preprocessing area
-shutil.rmtree(process_path)
+    # Remove the folder from the preprocessing area
+    shutil.rmtree(process_path)
 
 logfile.close()

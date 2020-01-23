@@ -16,18 +16,20 @@ def mysql_connection(host,user,password,dbname,logfile):
     try:
         db = pymysql.connect(host,user,password,dbname)
         cur = db.cursor()
-        return cur, db
     except pymysql.Error as e:
         logfile.write('%s -- pymysql.Error: %s \n' % (datetime.now(),e))
+    else:
+	return cur, db
 
 
 def mysql_session(user,pwd,host,dbname,logfile):
     try:
         engine = create_engine('mysql+pymysql://' + user + ':' + pwd + '@' + host + '/'  + dbname)
         db_session = sessionmaker(bind=engine)
-    	return db_session
     except exc.SQLAlchemyError as e:
 	logfile.write('%s -- sqlalchemy.Error: %s \n' % (datetime.now(),e))
+    else:
+        return db_session
 
 
 def validate_session(session):
@@ -42,10 +44,11 @@ def select_event(session,table_object,s,logfile):
     try:
         rows = session.query(table_object)
         flt = rows.filter(table_object.event == s)
-	for j in flt:
-	   if j.event:
-	       return True
-	   else:
-	       return False
     except exc.SQLAlchemyError as e:
         logfile.write('%s -- sqlalchemy.Error: %s \n' % (datetime.now(),e))
+    else:
+        for j in flt:
+           if j.event:
+               return True
+           else:
+               return False

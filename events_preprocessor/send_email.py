@@ -19,5 +19,15 @@ def send_email(message,recipient,sender,smtp_host,logfile):
     server = smtplib.SMTP(smtp_host,25)
     try:
         server.sendmail(sender, [recipient], msg.as_string())
+    except smtplib.SMTPRecipientRefused as e:
+        logfile.write('%s -- SMTPRecipientRefusedError: %s \n' % (datetime.now(),e))
     except smtplib.SMTPSenderRefused as e:
         logfile.write('%s -- SMTPSenderRefusedError: %s \n' % (datetime.now(),e))
+    except smtplib.SMTPConnectError as e:
+        logfile.write('%s -- SMTPConnectError: %s \n' % (datetime.now(),e))
+    except smtplib.SMTPDataError as e:
+        logfile.write('%s -- SMTPDataError: %s \n' % (datetime.now(),e))
+    except smtplib.SMTPServerDisconnected as e:
+        logfile.write('%s -- SMTPServerDisconnected: %s \n' % (datetime.now(),e))
+    finally:
+        server.quit()

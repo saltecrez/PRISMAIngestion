@@ -16,11 +16,12 @@ def folder_size(path,logfile):
     if not isdir(path):
         return 0
     try:
-        for dirpath, dirnames, filenames in os.walk(path):
+        for dirpath,dirnames,filenames in os.walk(path):
             for f in filenames:
-                fp = os.path.join(dirpath, f)
+                fp = os.path.join(dirpath,f)
                 if isfile(fp):
                     total_size += os.path.getsize(fp)
-        return total_size
     except OSError as e:
         logfile.write('%s -- OS.Error: %s \n' % (datetime.now(),e))
+    else:
+	return total_size

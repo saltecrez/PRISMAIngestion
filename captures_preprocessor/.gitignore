@@ -5,6 +5,8 @@
 ######################
 logfile.txt
 
+conf.json
+
 ingest/
 camfolder/
 thumbs/

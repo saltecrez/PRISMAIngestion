@@ -67,8 +67,7 @@ for j in range(len(selected_event_list)):
     archived_event = mysql_tools.select_event(session,data_file,event_string,logfile)
 
     # if event not yet found in DB, copy to preprocessing area 
-   # if not archived_event: 
-    if archived_event: # da eliminare!!!!! 
+    if archived_event is None:
 	process_path = os.path.join(proc_path,selected_event_list[j])
 	try:
 	    # do not copy foreign stations to preprocessing area
@@ -143,7 +142,7 @@ for j in range(len(selected_event_list)):
 			    except shutil.Error as err:
 				logfile.write('%s -- shutil.Error: %s \n' % (datetime.now(),err))
 
-    # Remove the folder from the preprocessing area
-    shutil.rmtree(process_path)
+        # Remove the folder from the preprocessing area
+        shutil.rmtree(process_path)
 
 logfile.close()

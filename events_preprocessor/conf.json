@@ -2,14 +2,14 @@
 	"email": "elisa.londero@inaf.it",
 	"sender": "ia2-prisma@localhost",
 	"smtphost": "localhost",	
-	"eventfolder": "/home/ia2user/workspace/branch_event_development/PRISMAIngestion/events_preprocessor/event/",
+	"eventfolder": "/mnt/newdata/",
 	"dbhost": "localhost",
 	"dbuser": "archa",
 	"dbpwd": "Archa123",
 	"dbname": "prisma_archive_database",
-	"processfolder": "/home/ia2user/workspace/branch_event_development/PRISMAIngestion/events_preprocessor/preproc/",
-	"ingestfolder": "/home/ia2user/workspace/branch_event_development/PRISMAIngestion/events_preprocessor/ingest/",
+	"processfolder": "/home/ia2user/workspace/branch_captures_development/PRISMAIngestion/events_preprocessor/preproc/",
+	"ingestfolder": "/home/ia2user/workspace/branch_captures_development/PRISMAIngestion/events_preprocessor/ingest/",
 	"stations": "foreign_stations.txt",
-	"thumbsfolder": "/home/ia2user/workspace/branch_event_development/PRISMAIngestion/events_preprocessor/thumb/",
-	"failurefolder": "/home/ia2user/workspace/branch_event_development/PRISMAIngestion/events_preprocessor/temp/"
+	"thumbsfolder": "/home/ia2user/workspace/branch_captures_development/PRISMAIngestion/events_preprocessor/thumb/",
+	"failurefolder": "/home/ia2user/workspace/branch_captures_development/PRISMAIngestion/events_preprocessor/temp/"
 }

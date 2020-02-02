@@ -4,6 +4,7 @@
 # Logs and databases #
 ######################
 logfile.txt
+conf.json
 
 preproc/
 thumb/

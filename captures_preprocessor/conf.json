@@ -3,13 +3,13 @@
         "sender": "ia2-prisma@localhost",
         "smtphost": "localhost",
 	"threadsnr": "1",
+	"monthsnr": "2",
         "camerasfolder": "/mnt/storage/",
         "dbhost": "localhost",
         "dbuser": "archa",
         "dbpwd": "Archa123",
         "dbname": "prisma_calib",
 	"tbname": "PRS",
-        "ingestfolder": "/home/ia2user/workspace/branch_captures_development/PRISMAIngestion/captures_preprocessor/ingest",
-        "thumbsfolder": "/home/ia2user/workspace/branch_captures_development/PRISMAIngestion/captures_preprocessor/thumbs"
+        "ingestfolder": "/home/ia2user/workspace/branch_captures_development/PRISMAIngestion/captures_preprocessor/ingest/",
+        "thumbsfolder": "/home/ia2user/workspace/branch_captures_development/PRISMAIngestion/captures_preprocessor/thumbs/"
 }
-

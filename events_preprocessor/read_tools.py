@@ -16,9 +16,10 @@ def read_json(filename,cwd,logfile):
     try:
         with open(json_config_file_path) as data_file:
             config_properties = json.load(data_file)
-        return config_properties
     except IOError as e:
         logfile.write('%s -- IOError: %s \n' % (datetime.now(),e))
+    else:
+	return config_properties
 
 
 def read_csv(filename,logfile):
@@ -28,9 +29,10 @@ def read_csv(filename,logfile):
             csv_reader = csv.reader(csv_file,delimiter=',')
             for row in csv_reader:
                 rowlist.append(row)
-        return rowlist
     except IOError as e:
         logfile.write('%s -- IOError: %s \n' % (datetime.now(),e))
+    else:
+	return rowlist
 
 
 def read_txt(filename,cwd,logfile):
@@ -41,6 +43,7 @@ def read_txt(filename,cwd,logfile):
             for line in filehandle:
                currentPlace = line[:-1]
                mylist.append(currentPlace)
-        return mylist
     except IOError as e:
 	logfile.write('%s -- IOError: %s \n' % (datetime.now(),e))
+    else:
+	return mylist

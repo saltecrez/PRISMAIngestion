@@ -25,9 +25,13 @@ from fits_handling import fits_add_key
 from count_tar_elements import count_tar_elements
 from event_string_reader import event_string_reader
 
-
 CWD = os.getcwd()
 logfile = open(CWD + '/' + "logfile.txt",'a')
+
+try:
+    verify_linux()
+except AssertionError as err:
+    logfile.write('%s -- AssertionError: %s \n' % (datetime.now(),err))
 
 # Read from configuration file
 cnf = read_tools.read_json('conf.json',CWD,logfile) 
@@ -142,7 +146,10 @@ for j in range(len(selected_event_list)):
 			    except shutil.Error as err:
 				logfile.write('%s -- shutil.Error: %s \n' % (datetime.now(),err))
 
-        # Remove the folder from the preprocessing area
+    # Remove the folder from the preprocessing area
+    try:
         shutil.rmtree(process_path)
+    except shutil.Error as err:
+        logfile.write('%s -- shutil.Error: %s \n' % (datetime.now(),err))
 
 logfile.close()

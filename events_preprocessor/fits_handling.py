@@ -12,9 +12,14 @@ from datetime import datetime
 def fits_add_key(fits_path,key,key_value,comment,logfile):
     try:
         hdulist = fits.open(fits_path,mode='update')
-        prihdr = hdulist[0].header
-        prihdr[key] = (key_value,comment)
-        hdulist.flush()
-        hdulist.close()
     except OSError as e:
 	logfile.write('%s -- OSError: %s \n' % (datetime.now(),e))
+    else:
+	prihdr = hdulist[0].header
+	try:
+	    prihdr[key] = (key_value,comment)
+            hdulist.flush()
+	except KeyError as e:
+	    logfile.write('%s -- KeyError: %s \n' % (datetime.now(),e))
+    finally:
+	hdulist.close()

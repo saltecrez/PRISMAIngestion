@@ -43,9 +43,9 @@ def select_EXPID(session,table_object,s,logfile):
         rows = session.query(table_object)
         flt = rows.filter(table_object.EXP_ID == s)
 	for j in flt:
-	   if j.EXP_ID:
-	       return True
-	   else:
-	       return False
+	    if j.EXP_ID:
+	        return True
+	    else:
+	        return False
     except exc.SQLAlchemyError as e:
         logfile.write('%s -- sqlalchemy.Error: %s \n' % (datetime.now(),e))

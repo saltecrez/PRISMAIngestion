@@ -12,10 +12,13 @@
     - "sender": email address of the sender
     - "smtphost": hostname of the machine hosting the smtp server
     - "camerasfolder": path to the folder where the captures are rsynced from the French server
+    - "threadsnr": number of threads for performing a query on the DB
+    - "monthsnr": number of months to check the captures back
     - "dbhost": fitsImporter local database hostname
     - "dbuser": fitsImporter local database user
     - "dbpwd": fitsImporter local database password
     - "dbname": fitsImporter local database name
+    - "tbname": name of the captures table in the database
     - "ingestfolder": path to the folder monitored by the inotify daemon of the fitsImporter
     - "thumbsfolder": path to the folder where the thumbnails should be copied
 

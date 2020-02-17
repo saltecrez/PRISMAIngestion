@@ -4,10 +4,11 @@ __author__ = "Elisa Londero"
 __email__ = "elisa.londero@inaf.it"
 __date__ = "December 2019"
 
-
+from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, String, Integer
-from base import Base
+from database import MySQLDatabase
 
+Base = declarative_base()
 
 class data_file(Base):
     __tablename__ = 'data_file'

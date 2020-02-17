@@ -4,6 +4,7 @@ __author__ = "Elisa Londero"
 __email__ = "elisa.londero@inaf.it"
 __date__ = "June 2018"
 
+import os
 import json
 
 class ReadJson(object):
@@ -68,3 +69,8 @@ class ReadJson(object):
     def get_failures_folder(self):
         failures_folder = self._create_dictionary().get("failurefolder")
         return failures_folder
+
+if __name__ == "__main__":
+    filename = 'conf.json'
+    print(ReadJson(filename).get_db_pwd())
+

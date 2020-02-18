@@ -10,7 +10,7 @@ from database import MySQLDatabase
 
 Base = declarative_base()
 
-class data_file(Base):
+class DataFile(Base):
     __tablename__ = 'data_file'
 
     data_file_id = Column(Integer, primary_key=True)

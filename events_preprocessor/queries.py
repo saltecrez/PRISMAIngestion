@@ -4,7 +4,7 @@ __author__ = "Elisa Londero"
 __email__ = "elisa.londero@inaf.it"
 __date__ = "December 2019"
 
-from mapping import data_file
+from mapping import DataFile
 from database import MySQLDatabase
 
 class Queries(object):
@@ -18,10 +18,8 @@ class Queries(object):
         flt = rows.filter(self.table_object.event == self.string)
         for j in flt:
             if j.event:
-                print(True)
                 return True
             else:
-                print(False)
                 return False
 
 
@@ -31,5 +29,5 @@ if __name__ == "__main__":
     host = 'localhost'
     dbname = 'metadata_events'
     session = MySQLDatabase(user,pwd,host,dbname).mysql_session()
-    Queries(session,data_file,'20170621T221847').match_event()
+    Queries(session,DataFile,'20170621T221847').match_event()
 

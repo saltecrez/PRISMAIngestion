@@ -8,11 +8,8 @@ import os
 import json
 
 class ReadJson(object):
-    def __init__(self, filename):
-        self.filename = filename
-
     def _create_dictionary(self):
-        json_config_file_path = '%s/%s' % (os.getcwd(), self.filename)
+        json_config_file_path = '%s/%s' % (os.getcwd(), 'conf.json')
         config_properties = {}
         with open(json_config_file_path) as data_file:
             config_properties = json.load(data_file)

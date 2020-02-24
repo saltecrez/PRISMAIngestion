@@ -64,20 +64,6 @@ class FitsAddKey(object):
         hdulist.flush()
         hdulist.close()
 
-class CreateEventsString(object):
-    def __init__(self, input_list):
-        self.input_list = input_list
-
-    def create_events_string(self):
-        output_list = []
-        for i in self.input_list:
-            if i[0].isdigit() and i[8] == 'T':
-                output_list.append(i)
-            else:
-                pass
-        return output_list
-
-
 if __name__ == "__main__":
     VerifyLinux()
     recipient = 'elisa.londero@inaf.it'

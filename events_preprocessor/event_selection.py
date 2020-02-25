@@ -5,7 +5,6 @@ __email__ = "elisa.londero@inaf.it"
 __date__ = "February 2020"
 
 import os
-#import multiprocessing
 from glob import glob
 from read_json import ReadJson
 from database import MySQLDatabase 

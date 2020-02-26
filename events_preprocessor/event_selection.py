@@ -15,10 +15,10 @@ rj = ReadJson()
 
 class CheckEventString(object):
     def __init__(self):
-        self.events_folder = rj.get_event_folder()
+        self.rsync_path = rj.get_rsync_path()
 
     def _check_event_string(self):
-        event_paths = glob(self.events_folder + '/*')
+        event_paths = glob(self.rsync_path + '/*')
         event_strings = [os.path.basename(i)[0:15] for i in event_paths]
         output_list = []
         for i in event_strings:

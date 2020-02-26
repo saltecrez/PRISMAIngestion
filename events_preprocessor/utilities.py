@@ -33,23 +33,6 @@ class SendEmail(object):
         server.sendmail(self.sender, [self.recipient], msg.as_string())
         server.quit()
 
-class FolderSize(object):
-    '''Result in Unix block size'''
-    def __init__(self, path):
-        self.path = path
-
-    def get_folder_size(self):
-        total_size = 0
-        if not isdir(self.path):
-            return 0
-        for dirpath,dirnames,filenames in os.walk(self.path):
-            for f in filenames:
-                fp = os.path.join(dirpath,f)
-                if not os.path.islink(fp):
-                #if isfile(fp):
-                    total_size += os.path.getsize(fp)
-        return total_size
-
 class FitsAddKey(object):
     def __init__(self, fits_path, key, key_value, comment):
         self.fits_path = fits_path

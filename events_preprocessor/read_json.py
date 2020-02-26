@@ -15,9 +15,9 @@ class ReadJson(object):
             config_properties = json.load(data_file)
         return config_properties
 
-    def get_email(self):
-        email = self._create_dictionary().get("email")
-        return email
+    def get_recipient(self):
+        recipient = self._create_dictionary().get("email")
+        return recipient
 
     def get_sender(self):
         sender = self._create_dictionary().get("sender")
@@ -27,9 +27,9 @@ class ReadJson(object):
         smtp_host = self._create_dictionary().get("smtphost")
         return smtp_host
 
-    def get_event_folder(self):
-        event_folder = self._create_dictionary().get("eventfolder")
-        return event_folder
+    def get_rsync_path(self):
+        rsync_path = self._create_dictionary().get("eventfolder")
+        return rsync_path
 
     def get_db_host(self):
         db_host = self._create_dictionary().get("dbhost")
@@ -47,25 +47,25 @@ class ReadJson(object):
         db_name = self._create_dictionary().get("dbname")
         return db_name
 
-    def get_preprocess_folder(self):
-        preprocess_folder = self._create_dictionary().get("processfolder")
-        return preprocess_folder
+    def get_preproc_path(self):
+        preprocess_path = self._create_dictionary().get("processfolder")
+        return preprocess_path
 
     def get_ingestion_folder(self):
         ingestion_folder = self._create_dictionary().get("ingestfolder")
         return ingestion_folder
 
-    def get_foreign_stations(self):
-        foreign_stations = self._create_dictionary().get("stations")
-        return foreign_stations
+    def get_foreign_stations_filename(self):
+        stations = self._create_dictionary().get("stations")
+        return stations
 
-    def get_thumbs_folder(self):
-        thumbs_folder = self._create_dictionary().get("thumbsfolder")
-        return thumbs_folder
+    def get_thumbs_path(self):
+        thumbs_path = self._create_dictionary().get("thumbsfolder")
+        return thumbs_path
 
-    def get_failures_folder(self):
-        failures_folder = self._create_dictionary().get("failurefolder")
-        return failures_folder
+    def get_failures_path(self):
+        failures_path = self._create_dictionary().get("failurefolder")
+        return failures_path
 
 if __name__ == "__main__":
     filename = 'conf.json'

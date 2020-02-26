@@ -6,7 +6,8 @@ __date__ = "June 2018"
 
 from utilities import VerifyLinux
 from event_selection import SelectEventString 
-from copy_folders import CopyToPreprocessingArea
+from event_preprocessing import CopyToPreprocessingArea
+from event_preprocessing import EventPreprocessing
 
 def main():
     VerifyLinux()
@@ -14,7 +15,7 @@ def main():
     selected = SelectEventString().get_selected_events_list()
     for i in selected:
         CopyToPreprocessingArea(i).copy_folder()
+        EventPreprocessing(i).get_stations_names()
 
 if __name__ == "__main__":
    main()
-

@@ -15,7 +15,9 @@ def main():
     selected = SelectEventString().get_selected_events_list()
     for i in selected:
         CopyToPreprocessingArea(i).copy_folder()
-        EventPreprocessing(i).get_stations_names()
+        ep = EventPreprocessing(i) 
+        ep.run()
+        ep.remove_event()
 
 if __name__ == "__main__":
    main()

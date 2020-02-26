@@ -51,9 +51,9 @@ class ReadJson(object):
         preprocess_path = self._create_dictionary().get("processfolder")
         return preprocess_path
 
-    def get_ingestion_folder(self):
-        ingestion_folder = self._create_dictionary().get("ingestfolder")
-        return ingestion_folder
+    def get_ingestion_path(self):
+        ingestion_path = self._create_dictionary().get("ingestfolder")
+        return ingestion_path
 
     def get_foreign_stations_filename(self):
         stations = self._create_dictionary().get("stations")

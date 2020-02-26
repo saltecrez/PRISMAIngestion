@@ -7,6 +7,7 @@ __date__ = "January 2020"
 import os
 import sys
 import smtplib
+import subprocess
 import email.utils
 from os.path import isdir
 from os.path import isfile
@@ -47,6 +48,26 @@ class FitsAddKey(object):
         hdulist.flush()
         hdulist.close()
 
+class TarHandling(object):
+    def __init__(self, infolder):
+        self.infolder = infolder
+        self.tarfolder = self.infolder + '.tar.gz'
+
+    def create_tarfile(self):
+        '''Python's tarfile implementation is 10 times slower than Unix' tar command
+           therefore I use the Unix command in this implementation'''
+        exit_code = subprocess.call(['tar', '--exclude=.*', '-czvf', self.tarfolder, self.infolder])
+        if exit_code == 0:
+            return True
+        else:
+            return False
+
+    def count_tar_elements(self):
+        cmd = 'tar -tzf ' + self.tarfolder + ' | grep -vc "/$"'
+        count = os.popen(cmd).read()
+        print(count)
+        return count
+
 if __name__ == "__main__":
     VerifyLinux()
     recipient = 'elisa.londero@inaf.it'
@@ -57,5 +78,3 @@ if __name__ == "__main__":
 
     #SendEmail(msg,recipient,sender,smtphost).send_email()
     print(FolderSize(path).get_folder_size())
-
-

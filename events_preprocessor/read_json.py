@@ -6,68 +6,159 @@ __date__ = "June 2018"
 
 import os
 import json
+from utilities import LoggingClass
+from utilities import MissingConfParameter
+
+log = LoggingClass('',True).get_logger()
 
 class ReadJson(object):
     def _create_dictionary(self):
-        json_config_file_path = '%s/%s' % (os.getcwd(), 'conf.json')
-        config_properties = {}
-        with open(json_config_file_path) as data_file:
-            config_properties = json.load(data_file)
-        return config_properties
+        try:
+            json_config_file_path = '%s/%s' % (os.getcwd(), 'conf.json')
+            config_properties = {}
+            with open(json_config_file_path) as data_file:
+                config_properties = json.load(data_file)
+            return config_properties
+        except Exception as e:
+            log.error("{0}".format(e))
+            exit(1)
 
     def get_recipient(self):
-        recipient = self._create_dictionary().get("email")
-        return recipient
+        try:
+            recipient = self._create_dictionary().get("email")
+            if recipient is None:
+                raise MissingConfParameter('email')
+            return recipient
+        except MissingConfParameter as e:
+            log.error("{0}".format(e))
+            exit(1)
 
     def get_sender(self):
-        sender = self._create_dictionary().get("sender")
-        return sender
+        try:
+            sender = self._create_dictionary().get("sender")
+            if sender is None:
+                raise MissingConfParameter('sender')
+            return sender
+        except MissingConfParameter as e:
+            log.error("{0}".format(e))
 
     def get_smtp_host(self):
-        smtp_host = self._create_dictionary().get("smtphost")
-        return smtp_host
+        try:
+            smtp_host = self._create_dictionary().get("smtp_host")
+            if smtp_host is None:
+                raise MissingConfParameter('smtp_host')
+            return smtp_host
+        except MissingConfParameter as e:
+            log.error("{0}".format(e))
+            exit(1)
 
     def get_rsync_path(self):
-        rsync_path = self._create_dictionary().get("eventfolder")
-        return rsync_path
+        try:
+            rsync_path = self._create_dictionary().get("rsync_folder")
+            if rsync_path is None:
+                raise MissingConfParameter('rsync_folder')
+            return rsync_path
+        except MissingConfParameter as e:
+            log.error("{0}".format(e))
+            exit(1)
 
     def get_db_host(self):
-        db_host = self._create_dictionary().get("dbhost")
-        return db_host
+        try:
+            db_host = self._create_dictionary().get("db_host")
+            if db_host is None:
+                raise MissingConfParameter('db_host')
+            return db_host
+        except MissingConfParameter as e:
+            log.error("{0}".format(e))
 
     def get_db_user(self):
-        db_user = self._create_dictionary().get("dbuser")
-        return db_user
+        try:
+            db_user = self._create_dictionary().get("db_user")
+            if db_user is None:
+                raise MissingConfParameter('db_user')
+            return db_user
+        except MissingConfParameter as e:
+            log.error("{0}".format(e))
+            exit(1)
 
     def get_db_pwd(self):
-        db_pwd = self._create_dictionary().get("dbpwd")
-        return db_pwd
+        try:
+            db_pwd = self._create_dictionary().get("db_pwd")
+            if db_pwd is None:
+                raise MissingConfParameter('db_pwd')
+            return db_pwd
+        except MissingConfParameter as e:
+            log.error("{0}".format(e))
+            exit(1)
 
     def get_db_name(self):
-        db_name = self._create_dictionary().get("dbname")
-        return db_name
+        try:
+            db_name = self._create_dictionary().get("db_name")
+            if db_name is None:
+                raise MissingConfParameter('db_name')
+            return db_name
+        except MissingConfParameter as e:
+            log.error("{0}".format(e))
+            exit(1)
+
+    def get_db_port(self):
+        try:
+            db_port = self._create_dictionary().get("db_port")
+            if db_port is None:
+                raise MissingConfParameter('db_port')
+            return db_port
+        except MissingConfParameter as e:
+            log.error("{0}".format(e))
 
     def get_preproc_path(self):
-        preprocess_path = self._create_dictionary().get("processfolder")
-        return preprocess_path
+        try:
+            preprocess_path = self._create_dictionary().get("process_folder")
+            if preprocess_path is None:
+                raise MissingConfParameter('process_folder')
+            return preprocess_path
+        except MissingConfParameter as e:
+            log.error("{0}".format(e))
+            exit(1)
 
     def get_ingestion_path(self):
-        ingestion_path = self._create_dictionary().get("ingestfolder")
-        return ingestion_path
+        try:
+            ingestion_path = self._create_dictionary().get("ingest_folder")
+            if ingestion_path is None:
+                raise MissingConfParameter('ingest_folder')
+            return ingestion_path
+        except MissingConfParameter as e:
+            log.error("{0}".format(e))
+            exit(1)
 
     def get_foreign_stations_filename(self):
-        stations = self._create_dictionary().get("stations")
-        return stations
+        try:
+            stations = self._create_dictionary().get("stations")
+            if stations is None:
+                raise MissingConfParameter('stations')
+            return stations
+        except MissingConfParameter as e:
+            log.error("{0}".format(e))
+            exit(1)
 
     def get_thumbs_path(self):
-        thumbs_path = self._create_dictionary().get("thumbsfolder")
-        return thumbs_path
+        try:
+            thumbs_path = self._create_dictionary().get("thumbs_folder")
+            if thumbs_path is None:
+                raise MissingConfParameter('thumbs_folder')
+            return thumbs_path
+        except MissingConfParameter as e:
+            log.error("{0}".format(e))
+            exit(1)
 
     def get_failures_path(self):
-        failures_path = self._create_dictionary().get("failurefolder")
-        return failures_path
+        try:
+            failures_path = self._create_dictionary().get("failure_folder")
+            if failures_path is None:
+                raise MissingConfParameter('failure_folder')
+            return failures_path
+        except MissingConfParameter as e:
+            log.error("{0}".format(e))
+            exit(1)
 
 if __name__ == "__main__":
-    filename = 'conf.json'
-    print(ReadJson(filename).get_db_pwd())
-
+    print(ReadJson().get_smtp_host())

@@ -60,13 +60,19 @@ class SendEmail(object):
         self.smtphost = smtphost
     
     def send_email(self):
+        hostname = self.sender.split("@",1)[1].title() 
         msg = MIMEText(self.message)
         msg['To'] = email.utils.formataddr(('To', self.recipient))
-        msg['From'] = email.utils.formataddr(('PrismaWatchDog', self.sender))
-        msg['Subject'] = 'Prisma alert'
-        server = smtplib.SMTP(self.smtphost, 25)
-        server.sendmail(self.sender, [self.recipient], msg.as_string())
-        server.quit()
+        msg['From'] = email.utils.formataddr((hostname+'WatchDog', self.sender))
+        msg['Subject'] = hostname + ' alert'
+        try:
+            server = smtplib.SMTP(self.smtphost, 25)
+        except Exception as e:
+            msg = "SMTP connection excep - SendEmail.send_email -- " 
+            log.error("{0}{1}".format(msg,e))
+        else:
+            server.sendmail(self.sender, [self.recipient], msg.as_string())
+            server.quit()
 
 class FitsAddKey(object):
     def __init__(self, fits_path, key, key_value, comment):

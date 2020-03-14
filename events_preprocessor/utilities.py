@@ -7,16 +7,50 @@ __date__ = "January 2020"
 import os
 import sys
 import smtplib
+import logging
 import subprocess
 import email.utils
+import logging.handlers
 from os.path import isdir
 from os.path import isfile
 from astropy.io import fits
-
 from email.mime.text import MIMEText
 
 class VerifyLinux(object):
     assert ('linux' in sys.platform), "Function can only run on Linux systems."
+
+class LoggingClass(object):
+    def __init__(self, logger_name='root', create_file=False):
+        self.logger_name = logger_name
+        self.create_file = create_file
+
+    def get_logger(self):
+        log = logging.getLogger(self.logger_name)
+        log.setLevel(level=logging.DEBUG)
+
+        formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s','%Y-%m-%d %H:%M:%S')
+
+        if self.create_file:
+                fh = logging.FileHandler('file.log')
+                fh.setLevel(level=logging.DEBUG)
+                fh.setFormatter(formatter)
+
+        ch = logging.StreamHandler()
+        ch.setLevel(level=logging.DEBUG)
+        ch.setFormatter(formatter)
+
+        if self.create_file:
+            log.addHandler(fh)
+
+        log.addHandler(ch)
+        return  log
+
+class MissingConfParameter(Exception):
+    def __init__(self, par):
+        super().__init__(f"Parameter {par} not defined in configuration file")
+        self.par = par
+
+log = LoggingClass('',True).get_logger()
 
 class SendEmail(object):
     def __init__(self, message, recipient, sender, smtphost):
@@ -67,6 +101,35 @@ class TarHandling(object):
         count = os.popen(cmd).read()
         print(count)
         return count
+
+class FolderSize(object):
+    '''Result in Unix block size'''
+    def __init__(self, path):
+        self.path = path
+
+    def get_folder_size(self):
+        total_size = 0
+        if not isdir(self.path):
+            return 0
+        for dirpath,dirnames,filenames in os.walk(self.path):
+            for f in filenames:
+                fp = os.path.join(dirpath,f)
+                if not os.path.islink(fp):
+                    total_size += os.path.getsize(fp)
+        return total_size
+
+class ReadStations(object):
+    def __init__(self, filename):
+        self.filename = filename
+
+    def _get_stations_list(self):
+        filepath = '%s/%s' % (os.getcwd(), self.filename)
+        stations_list = []
+        with open(filepath, 'r') as filehandle:
+            for line in filehandle:
+                currentPlace = line[:-1]
+                stations_list.append(currentPlace)
+        return stations_list
 
 if __name__ == "__main__":
     VerifyLinux()

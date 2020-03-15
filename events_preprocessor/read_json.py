@@ -159,6 +159,3 @@ class ReadJson(object):
         except MissingConfParameter as e:
             log.error("{0}".format(e))
             exit(1)
-
-if __name__ == "__main__":
-    print(ReadJson().get_smtp_host())

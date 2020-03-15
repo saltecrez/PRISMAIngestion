@@ -25,13 +25,13 @@ class MySQLDatabase(object):
         self.dbname = dbname
 
     def _create_session(self):
-        sdb = 'mysql+pymysql://%s:%s@%s/%s'%(self.user,self.pwd,self.host,self.dbname)
-        try: 
+        sdb = 'mysql+pymysql://%s:%s@%s:%s/%s'%(self.user,self.pwd,self.host,self.port,self.dbname)
+        try:
             engine = create_engine(sdb)
             db_session = sessionmaker(bind=engine)
             return db_session()
         except Exception as e:
-            msg = "Database session creation excep - MySQLDatabase.create_session -- "
+            msg = "Database session creation excep - MySQLDatabase._create_session -- "
             log.error("{0}{1}".format(msg,e))
 
     def _validate_session(self):
@@ -39,7 +39,7 @@ class MySQLDatabase(object):
             connection = self._create_session().connection()
             return True
         except Exception as e:
-            msg = "Database session validation excep - MySQLDatabase.validate_session -- "
+            msg = "Database session validation excep - MySQLDatabase._validate_session -- "
             log.error("{0}{1}".format(msg,e))
             return False
 
@@ -86,16 +86,3 @@ class Queries(object):
         except Exception as e:
             msg = "Match event string excep - Queries.match_event -- "
             log.error("{0}{1}".format(msg,e))
-
-if __name__ == "__main__":
-    user = 'archa'
-    pwd = 'Archa123'
-    host = 'localhost'
-    dbport = '3306'
-    dbname = 'prisma_archive_database'
-    Session = MySQLDatabase(user,pwd,dbname,host,dbport)._create_session()
-    print(MySQLDatabase(user,pwd,dbname,host,dbport)._validate_session())
-    s = MySQLDatabase(user,pwd,dbname,host,dbport).mysql_session()
-    print(MySQLDatabase(user,pwd,dbname,host,dbport).close_session())
-    print(Queries(s,DataFile,'20170621T221847').match_event())
-

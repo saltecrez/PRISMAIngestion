@@ -47,7 +47,7 @@ class LoggingClass(object):
 
 class MissingConfParameter(Exception):
     def __init__(self, par):
-        super().__init__(f"Parameter {par} not defined in configuration file")
+        #super().__init__(f"Parameter {par} not defined in configuration file")
         self.par = par
 
 log = LoggingClass('',True).get_logger()
@@ -82,11 +82,15 @@ class FitsAddKey(object):
         self.comment = comment
 
     def fits_add_key(self):
-        hdulist = fits.open(self.fits_path,mode='update')
-        prihdr = hdulist[0].header
-        prihdr[self.key] = (self.key_value,self.comment)
-        hdulist.flush()
-        hdulist.close()
+        try:
+            hdulist = fits.open(self.fits_path,mode='update')
+            prihdr = hdulist[0].header
+            prihdr[self.key] = (self.key_value,self.comment)
+            hdulist.flush()
+            hdulist.close()
+        except Exception as e:
+            msg = "FITS manipulation excep - FitsAddKey.fits_add_key -- "
+            log.error("{0}{1}".format(msg,e))
 
 class TarHandling(object):
     def __init__(self, infolder):
@@ -96,17 +100,24 @@ class TarHandling(object):
     def create_tarfile(self):
         '''Python's tarfile implementation is 10 times slower than Unix' tar command
            therefore I use the Unix command in this implementation'''
-        exit_code = subprocess.call(['tar', '--exclude=.*', '-czvf', self.tarfolder, self.infolder])
-        if exit_code == 0:
-            return True
-        else:
-            return False
+        try:
+            exit_code = subprocess.call(['tar', '--exclude=.*', '-czvf', self.tarfolder, self.infolder])
+            if exit_code == 0:
+                return True
+            else:
+                return False
+        except Exception as e:
+            msg = "tar file creation excep - TarHandling.create_tarfile -- "
+            log.error("{0}{1}".format(msg,e))
 
     def count_tar_elements(self):
-        cmd = 'tar -tzf ' + self.tarfolder + ' | grep -vc "/$"'
-        count = os.popen(cmd).read()
-        print(count)
-        return count
+        try:
+            cmd = 'tar -tzf ' + self.tarfolder + ' | grep -vc "/$"'
+            count = os.popen(cmd).read()
+            return count
+        except Exception as e:
+            msg = "tar file element count excep - TarHandling.count_tar_elements -- "
+            log.error("{0}{1}".format(msg,e))
 
 class FolderSize(object):
     '''Result in Unix block size'''
@@ -115,35 +126,33 @@ class FolderSize(object):
 
     def get_folder_size(self):
         total_size = 0
-        if not isdir(self.path):
-            return 0
-        for dirpath,dirnames,filenames in os.walk(self.path):
-            for f in filenames:
-                fp = os.path.join(dirpath,f)
-                if not os.path.islink(fp):
-                    total_size += os.path.getsize(fp)
-        return total_size
+        try:
+            if not isdir(self.path):
+                return 0
+            for dirpath,dirnames,filenames in os.walk(self.path):
+                for f in filenames:
+                    fp = os.path.join(dirpath,f)
+                    if not os.path.islink(fp):
+                        total_size += os.path.getsize(fp)
+            return total_size
+        except Exception as e:
+            msg = "Folder size calculation excep - FolderSize.get_folder_size -- "
+            log.error("{0}{1}".format(msg,e))
+
 
 class ReadStations(object):
     def __init__(self, filename):
         self.filename = filename
 
     def _get_stations_list(self):
-        filepath = '%s/%s' % (os.getcwd(), self.filename)
-        stations_list = []
-        with open(filepath, 'r') as filehandle:
-            for line in filehandle:
-                currentPlace = line[:-1]
-                stations_list.append(currentPlace)
-        return stations_list
-
-if __name__ == "__main__":
-    VerifyLinux()
-    recipient = 'elisa.londero@inaf.it'
-    sender = 'prisma@localhost' 
-    smtphost = 'localhost'  
-    msg = 'Severe alert'
-    path = '/home/controls/workspace/development/PRISMAIngestion/events_preprocessor/sfoltisci'
-
-    #SendEmail(msg,recipient,sender,smtphost).send_email()
-    print(FolderSize(path).get_folder_size())
+        try:
+            filepath = '%s/%s' % (os.getcwd(), self.filename)
+            stations_list = []
+            with open(filepath, 'r') as filehandle:
+                for line in filehandle:
+                    currentPlace = line[:-1]
+                    stations_list.append(currentPlace)
+            return stations_list
+        except Exception as e:
+            msg = "Read stations excep - ReadStations._get_stations_list -- "
+            log.error("{0}{1}".format(msg,e))

@@ -13,39 +13,12 @@ from shutil import ignore_patterns
 from utilities import SendEmail
 from utilities import FitsAddKey
 from utilities import TarHandling 
+from utilities import ReadStations 
+from utilities import FolderSize
 
 rj = ReadJson()
 rsync_path = rj.get_rsync_path()
 prep_path = rj.get_preproc_path()
-
-class FolderSize(object):
-    '''Result in Unix block size'''
-    def __init__(self, path):
-        self.path = path
-
-    def get_folder_size(self):
-        total_size = 0
-        if not isdir(self.path):
-            return 0
-        for dirpath,dirnames,filenames in os.walk(self.path):
-            for f in filenames:
-                fp = os.path.join(dirpath,f)
-                if not os.path.islink(fp):
-                    total_size += os.path.getsize(fp)
-        return total_size
-
-class ReadStations(object):
-    def __init__(self, filename):
-        self.filename = filename
-
-    def _get_stations_list(self):
-        filepath = '%s/%s' % (os.getcwd(), self.filename)
-        stations_list = []
-        with open(filepath, 'r') as filehandle:
-            for line in filehandle:
-                currentPlace = line[:-1]
-                stations_list.append(currentPlace)
-        return stations_list
 
 class CopyToPreprocessingArea(object):
     def __init__(self, event_str):
@@ -80,7 +53,7 @@ class EventPreprocessing(object):
         sp, sf, sn = self.get_stations_names()
 
         for j in range(len(sn)):
-	    fitsfile_path = glob(sp[j] + '/*.fit')
+            fitsfile_path = glob(sp[j] + '/*.fit')
             event_str_full = self.event_str + '_UT'
             failure_folder = os.path.join(self.fail_path, sf[j])
             station_original_path = os.path.join(rsync_path, event_str_full, sf[j])
@@ -88,7 +61,7 @@ class EventPreprocessing(object):
             size_dest = FolderSize(sp[j]).get_folder_size()
 
             if size_origin != size_dest:
-                msg = 'Event alert: folder size mismatch after copy. Event affected: ' + self.event_str
+                msg = 'Event alert: folder size mismatch after copy. Event: ' + self.event_str
                 SendEmail(msg, self.recipient, self.sender, self.smtphost).send_email()
                 shutil.move(self.event_folder, self.failure_folder)
             else:
@@ -102,7 +75,7 @@ class EventPreprocessing(object):
                     os.rename(fitsfile_path[0],fits_path_renamed)
                     FitsAddKey(fits_path_renamed, 'EVENT', self.event_str, 'Event label').fits_add_key()
 
-                    folder_elements = sum([len(files) for r, d, files in os.walk(sf[j])])                    
+                    folder_elements = sum([len(files) for r, d, files in os.walk(sp[j])])                    
                     os.chdir(self.event_folder)
                     tar = TarHandling(sf[j])
                     exit_bool = tar.create_tarfile()
@@ -111,9 +84,9 @@ class EventPreprocessing(object):
                         if tar_elements == folder_elements:
                             shutil.copy(sf[j] + '.tar.gz', self.ingest_path)
                         else:
-                            msg = 'Frames number in tar and in original folder do not match'
+                            msg = 'Frames number in tar and in original folder do not match. Event ' + self.event_str + ' - moved to FAILURES folder'
                             SendEmail(msg, self.recipient, self.sender, self.smtphost).send_email()
-                            shutil.move(sf[j] + '.tar.gz', self.fail_path)
+                            shutil.move(sf[j] + '.tar.gz', self.fail_path + sf[j] + '.tar.gz')
                             
     def remove_event(self):
         shutil.rmtree(self.event_folder)

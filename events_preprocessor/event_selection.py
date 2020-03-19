@@ -11,13 +11,21 @@ from database import MySQLDatabase
 from database import Queries
 from database import DataFile
 
-rj = ReadJson()
-
-class CheckEventString(object):
+class SelectEventString(object):
     def __init__(self):
+        rj = ReadJson()
+        self.dbhost = rj.get_db_host()
+        self.dbuser = rj.get_db_user()
+        self.dbpwd = rj.get_db_pwd()
+        self.dbport = rj.get_db_port()
+        self.dbname = rj.get_db_name()
         self.rsync_path = rj.get_rsync_path()
 
+        self.db = MySQLDatabase(self.dbuser, self.dbpwd, self.dbname, self.dbhost, self.dbport)
+        self.Session = self.db.mysql_session()
+
     def _check_event_string(self):
+        '''Check the event string matches roughly YYYYMMDDTHHMMSS format''' 
         try:
             event_folders = glob(self.rsync_path + '/*')
             event_strings = [os.path.basename(i)[0:15] for i in event_folders]
@@ -30,20 +38,10 @@ class CheckEventString(object):
             return output_list
         except Exception as e:
             msg = "String event selection excep - CheckEventString._check_event_string --"
-            log.error("{0}{1}".format(msg,e))  	
-
-class SelectEventString(object):
-    def __init__(self):
-        self.dbhost = rj.get_db_host()
-        self.dbuser = rj.get_db_user()
-        self.dbpwd = rj.get_db_pwd()
-        self.dbport = rj.get_db_port()
-        self.dbname = rj.get_db_name()
-
-        self.db = MySQLDatabase(self.dbuser, self.dbpwd, self.dbname, self.dbhost, self.dbport)
-        self.Session = self.db.mysql_session()
+            log.error("{0}{1}".format(msg,e))
 
     def _filter_event(self, event_string):
+        '''Check if an event string is found in database'''
         try:
             rows = Queries(self.Session, DataFile, event_string).match_event()
             if not rows:
@@ -53,8 +51,9 @@ class SelectEventString(object):
             log.error("{0}{1}".format(msg,e))
    
     def get_selected_events_list(self): 
+        '''Create list of event strings with YYYYMMDDTHHMMSS format and not found in database'''
         try:
-            checked_list = CheckEventString()._check_event_string() 
+            checked_list = self._check_event_string() 
             selected_list = []
             for i in checked_list:
                 if self._filter_event(i) is not None:

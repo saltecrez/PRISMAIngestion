@@ -5,7 +5,7 @@ __email__ = "elisa.londero@inaf.it"
 __date__ = "June 2018"
 
 from utilities import VerifyLinux
-from event_selection import SelectEventString 
+from event_preprocessing import SelectEventString 
 from event_preprocessing import EventPreprocessing
 from utilities import LoggingClass
 

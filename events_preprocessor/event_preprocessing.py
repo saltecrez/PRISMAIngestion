@@ -21,16 +21,16 @@ from database import MySQLDatabase
 from shutil import ignore_patterns
 
 log = LoggingClass('',True).get_logger()
+rj = ReadJson()
+rsync_path = rj.get_rsync_path()
 
 class SelectEventString(object):
     def __init__(self):
-        rj = ReadJson()
         self.dbhost = rj.get_db_host()
         self.dbuser = rj.get_db_user()
         self.dbpwd = rj.get_db_pwd()
         self.dbport = rj.get_db_port()
         self.dbname = rj.get_db_name()
-        self.rsync_path = rj.get_rsync_path()
 
         self.db = MySQLDatabase(self.dbuser, self.dbpwd, self.dbname, self.dbhost, self.dbport)
         self.Session = self.db.mysql_session()
@@ -38,7 +38,7 @@ class SelectEventString(object):
     def _check_event_string(self):
         '''Check the event string matches roughly YYYYMMDDTHHMMSS format'''
         try:
-            event_folders = glob(self.rsync_path + '/*')
+            event_folders = glob(rsync_path + '/*')
             event_strings = [os.path.basename(i)[0:15] for i in event_folders]
             output_list = []
             for i in event_strings:
@@ -78,7 +78,6 @@ class EventPreprocessing(object):
     def __init__(self, event_str):
         rj = ReadJson()
         self.event_str = event_str
-        self.rsync_path = rj.get_rsync_path()
         self.prep_path = rj.get_preproc_path()
         self.fail_path = rj.get_failures_path()
         self.thumb_path = rj.get_thumbs_path()
@@ -94,7 +93,7 @@ class EventPreprocessing(object):
         '''Copy event folder to preprocessing area. Leave out foreign folders'''
         ignore_lst = [i + '*' for i in ReadStations(self.st_file)._get_stations_list()]
         event_str_full = self.event_str + '_UT'
-        source = os.path.join(self.rsync_path, event_str_full)
+        source = os.path.join(rsync_path, event_str_full)
         dest = os.path.join(self.prep_path, self.event_str)
         if not os.path.exists(dest):
             try:
@@ -117,7 +116,7 @@ class EventPreprocessing(object):
 
     def _compare_sizes(self, stat_fullname, station_path):
         '''Stations folder size comparison between rsync and preprocessing areas'''
-        station_original_path = os.path.join(self.rsync_path, self.event_str_full, stat_fullname)
+        station_original_path = os.path.join(rsync_path, self.event_str_full, stat_fullname)
         size_origin = FolderSize(station_original_path).get_folder_size()
         size_dest = FolderSize(station_path).get_folder_size()
         if size_origin != size_dest:

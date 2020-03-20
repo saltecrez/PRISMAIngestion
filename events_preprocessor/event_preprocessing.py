@@ -20,9 +20,9 @@ from utilities import LoggingClass
 from database import MySQLDatabase
 from shutil import ignore_patterns
 
-log = LoggingClass('',True).get_logger()
 rj = ReadJson()
 rsync_path = rj.get_rsync_path()
+log = LoggingClass('',True).get_logger()
 
 class SelectEventString(object):
     def __init__(self):

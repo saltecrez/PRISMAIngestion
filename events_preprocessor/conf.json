@@ -1,15 +1,16 @@
 {
-	"email": "elisa.londero@inaf.it",
-	"sender": "ia2-prisma@localhost",
-	"smtphost": "localhost",	
-	"eventfolder": "/mnt/newdata/",
-	"dbhost": "localhost",
-	"dbuser": "archa",
-	"dbpwd": "Archa123",
-	"dbname": "prisma_archive_database",
-	"processfolder": "/home/ia2user/workspace/branch_captures_development/PRISMAIngestion/events_preprocessor/preproc/",
-	"ingestfolder": "/home/ia2user/workspace/branch_captures_development/PRISMAIngestion/events_preprocessor/ingest/",
+	"email": "average.employee@inaf.it",
+	"sender": "hostname@localhost",
+	"smtp_host": "localhost",	
+	"rsync_folder": "/path/to/rsync_events_folder/",
+	"db_host": "localhost",
+	"db_user": "username",
+	"db_pwd": "s3cret",
+	"db_name": "prisma_archive_database",
+	"db_port": "3306",
+	"process_folder": "/path/to/events_processing_area/",
+	"ingest_folder": "/path/to/events_ingestion_folder/",
 	"stations": "foreign_stations.txt",
-	"thumbsfolder": "/home/ia2user/workspace/branch_captures_development/PRISMAIngestion/events_preprocessor/thumb/",
-	"failurefolder": "/home/ia2user/workspace/branch_captures_development/PRISMAIngestion/events_preprocessor/temp/"
+	"thumbs_folder": "/path/to/thumbs_folder/",
+	"failure_folder": "/path/to/failures_folder/"
 }

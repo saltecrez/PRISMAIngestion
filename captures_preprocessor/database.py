@@ -62,8 +62,8 @@ class MySQLDatabase(object):
 class DataFile(Base):
     __tablename__ = 'PRS'
 
-    data_file_id = Column(Integer, primary_key=True)
-    event = Column(String(45))
+    id = Column(Integer, primary_key=True)
+    file_name = Column(String(255))
 
     def __init__(self, file_name):
         self.file_name = file_name
@@ -74,15 +74,15 @@ class Queries(object):
         self.table_object = table_object
         self.string = string
 
-    def match_expid(self):
+    def match_filename(self):
         try:
             rows = self.session.query(self.table_object)
-            flt = rows.filter(self.table_object.event == self.string)
+            flt = rows.filter(self.table_object.file_name == self.string)
             for j in flt:
-                if j.event:
+                if j.file_name:
                     return True
                 else:
                     return False
         except Exception as e:
-            msg = "Match event string excep - Queries.match_event -- "
+            msg = "Match filename string excep - Queries.match_filename -- "
             log.error("{0}{1}".format(msg,e))

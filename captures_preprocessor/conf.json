@@ -3,7 +3,7 @@
         "sender": "ia2-prisma@localhost",
         "smtphost": "localhost",
 	"threadsnr": "1",
-	"monthsnr": "2",
+	"monthsnr": "1",
         "camerasfolder": "/mnt/storage/",
         "dbhost": "localhost",
         "dbuser": "archa",

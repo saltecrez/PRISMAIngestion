@@ -3,13 +3,14 @@
         "sender": "ia2-prisma@localhost",
         "smtphost": "localhost",
 	"threadsnr": "1",
-	"monthsnr": "1",
-        "camerasfolder": "/mnt/storage/",
-        "dbhost": "localhost",
-        "dbuser": "archa",
-        "dbpwd": "Archa123",
-        "dbname": "prisma_calib",
-	"tbname": "PRS",
-        "ingestfolder": "/home/ia2user/workspace/branch_captures_development/PRISMAIngestion/captures_preprocessor/ingest/",
-        "thumbsfolder": "/home/ia2user/workspace/branch_captures_development/PRISMAIngestion/captures_preprocessor/thumbs/"
+	"months_nr": "1",
+        "rsync_folder": "/mnt/rsync_captures/",
+        "db_host": "localhost",
+        "db_user": "archa",
+        "db_pwd": "Archa123.",
+        "db_name": "prisma_calib",
+        "db_port": "3306",
+	"tb_name": "PRS",
+        "ingest_folder": "/home/controls/workspace/development_folder_github/PRISMAIngestion/captures_preprocessor/ingest/",
+        "thumbs_folder": "/home/controls/workspace/development_folder_github/PRISMAIngestion/captures_preprocessor/thumbs/"
 }

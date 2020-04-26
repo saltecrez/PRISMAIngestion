@@ -4,32 +4,27 @@ __author__ = "Elisa Londero"
 __email__ = "elisa.londero@inaf.it"
 __date__ = "June 2018"
 
+from read_json import ReadJson
 from utilities import VerifyLinux
 from utilities import LoggingClass
-
-from read_json import ReadJson
-from processing import CaptureFoldersList
-from processing import MonthsString
-from processing import DoWork
+from processing import ArchiveFITS
+from processing import CamerasPathList
 
 log = LoggingClass('',True).get_logger()
 
 def main():
 
     try:
-        VerifyLinux()
+        erifyLinux()
 
         rj = ReadJson()
         cam_path = rj.get_rsync_path()
-        mon_nr = rj.get_months_number()
-        captures_folder_list = CaptureFoldersList(cam_path).create_list()
-        months_list = MonthsString(mon_nr).create_strings()
-        print(captures_folder_list)
-        print(months_list)
-        filename1 = 'ITCL01_20190326T090553_UT-0.fit.gz'
-        filename2 = 'ITVA01_20200411T081504_UT-0.fit.gz'
-        test_work = DoWork(filename2).do_work()
-        print(test_work)
+
+        cameras_path_list = CamerasPathList(cam_path).create_list()
+        # [/mnt/rsync_captures/ITER07/','/mnt/rsync_captures/ITLO01/']
+
+        for camera in cameras_path_list:
+                copyfits = ArchiveFITS(camera).copy_fits()
 
     except Exception as e:
         msg = "Main exception - main() -- "

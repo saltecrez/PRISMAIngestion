@@ -149,3 +149,13 @@ class ReadJson(object):
         except MissingConfParameter as e:
             log.error("{0}".format(e))
             exit(1)
+
+    def get_threads_number(self):
+        try:
+            threads_nr = self._create_dictionary().get("threads_nr")
+            if threads_nr is None:
+                raise MissingConfParameter('threads_nr')
+            return threads_nr
+        except MissingConfParameter as e:
+            log.error("{0}".format(e))
+            exit(1)

@@ -1,9 +1,9 @@
 {
         "email": "elisa.londero@inaf.it",
         "sender": "ia2-prisma@localhost",
-        "smtphost": "localhost",
-	"threadsnr": "1",
-	"months_nr": "1",
+        "smtp_host": "localhost",
+	"threads_nr": "1",
+	"months_nr": "3",
         "rsync_folder": "/mnt/rsync_captures/",
         "db_host": "localhost",
         "db_user": "archa",

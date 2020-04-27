@@ -145,7 +145,7 @@ class ReadJson(object):
             months_nr = self._create_dictionary().get("months_nr")
             if months_nr is None:
                 raise MissingConfParameter('months_nr')
-            return months_nr
+            return int(months_nr)
         except MissingConfParameter as e:
             log.error("{0}".format(e))
             exit(1)
@@ -155,7 +155,7 @@ class ReadJson(object):
             threads_nr = self._create_dictionary().get("threads_nr")
             if threads_nr is None:
                 raise MissingConfParameter('threads_nr')
-            return threads_nr
+            return int(threads_nr)
         except MissingConfParameter as e:
             log.error("{0}".format(e))
             exit(1)

@@ -20,11 +20,13 @@
     - "ingest_folder": path to the folder monitored by the inotify daemon of preProcessor
     - "thumbs_folder": path to the folder where the thumbnails have to be copied
 
-- **Recommended usage after cloning to localhost**:
+- **Recommended**:
     - cd PRISMAIngestion
     - python3.6 -m venv env
     - source env/bin/activate
     - pip3 install sqlalchemy
     - pip3 install astropy
-    - pip3 install pymysql 
+    - pip3 install pymysql
+    
+- **Usage**:
     - python3 main.py

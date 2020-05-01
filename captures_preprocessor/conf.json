@@ -1,16 +1,16 @@
 {
-        "email": "elisa.londero@inaf.it",
-        "sender": "ia2-prisma@localhost",
+        "email": "average.employee@inaf.it",
+        "sender": "hostname@localhost",
         "smtp_host": "localhost",
+        "rsync_folder": "/path/to/rsync_events_folder/",
 	"threads_nr": "1",
-	"months_nr": "3",
-        "rsync_folder": "/mnt/rsync_captures/",
+	"months_nr": "4",
         "db_host": "localhost",
-        "db_user": "archa",
-        "db_pwd": "Archa123.",
+        "db_user": "username",
+        "db_pwd": "s3cret",
         "db_name": "prisma_calib",
         "db_port": "3306",
 	"tb_name": "PRS",
-        "ingest_folder": "/home/controls/workspace/development_folder_github/PRISMAIngestion/captures_preprocessor/ingest/",
-        "thumbs_folder": "/home/controls/workspace/development_folder_github/PRISMAIngestion/captures_preprocessor/thumbs/"
+        "ingest_folder": "/path/to/calibrations_ingestion_folder/",
+        "thumbs_folder": "/path/to/thumbs_folder/"
 }

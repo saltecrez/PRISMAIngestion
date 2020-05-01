@@ -20,11 +20,13 @@
     - "thumbs_folder" [string]: path to the folder where the thumbnails should be copied
     - "failure_folder" [string]: path to the folder where the failed preprocessed events are moved
 
-- **Requirements**:
-    - python3
+- **Recommended**:
+    - cd PRISMAIngestion
+    - python3.6 -m venv env
+    - source env/bin/activate
+    - pip3 install sqlalchemy
     - pip3 install astropy
     - pip3 install pymysql
-    - pip3 install sqlalchemy 
 
 - **Usage**:
     - python3 main.py

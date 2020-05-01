@@ -5,16 +5,17 @@ __email__ = "elisa.londero@inaf.it"
 __date__ = "February 2020"
 
 import os
+import shutil
 from glob import glob
 import multiprocessing
+from datetime import datetime
+from datetime import timedelta
 from database import Queries
 from database import DataFile
 from read_json import ReadJson
 from multiprocessing import Pool
 from utilities import LoggingClass
 from database import MySQLDatabase
-from datetime import datetime 
-from datetime import timedelta
 
 log = LoggingClass('',True).get_logger()
 rj  = ReadJson()
@@ -81,7 +82,7 @@ class ArchiveFITS(object):
                 if not os.path.exists(os.path.join(self.ingest_path,name)):
                     path = self.cameras_month_path + '/' + name
                     try:
-#                        #shutil.copy(path,os.path.join(self.ingest_path,name))
+                        shutil.copy(path,os.path.join(self.ingest_path,name))
                         print(name)
                     except shutil.Error as e:
                         msg = "Copy FITS excep -- ArchiveFITS.copy_fits --"
@@ -96,9 +97,7 @@ class ArchiveFITS(object):
             jpg_original_path = os.path.join(self.cameras_month_path,jpg500_name)
             if not os.path.exists(jpg_destination) and os.path.exists(jpg_original_path):
                 try:
-                     #shutil.copy(jpg_original_path,jpg_destination)
-                    print(jpg_original_path)
-                    print(jpg_destination)
+                    shutil.copy(jpg_original_path,jpg_destination)
                 except shutil.Error as e:
                     msg = "Copy jpg thumbnail excep -- ArchiveFITS.copy_jpg --"
                     log.error("{0}{1}".format(msg,e))

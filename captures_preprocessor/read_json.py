@@ -22,6 +22,8 @@ class ReadJson(object):
         except Exception as e:
             log.error("{0}".format(e))
             exit(1)
+        finally:
+            data_file.close()
 
     def get_recipient(self):
         try:

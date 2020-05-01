@@ -1,26 +1,27 @@
 # Captures preprocessor
 
-- **Goal**: Preprocessing of PRISMA captures FITS and JPG files for the current month.
+- **Goal**: Collect PRISMA captures' FITS and JPG files from rsync folders and copy them to the ingestion folder.
 
-- **Description**: The tool checks the incoming captures path, for each of the cameras, selects the FITS and JPG files that have not yet been archived, copies the FITS files to the Nadir ingestion folder and the JPG files to their archiving folder. 
-
-- **Requirements**:
-    - pip install sqlalchemy 
+- **Description**: The tool checks the incoming captures rsync path and for each of the cameras, according to the number of months specified in the configuration file, selects all the FITS and JPG files that have not been archived yet. The selected FITS files are copied to the NADIR ingestion folder (preProcessor folder). The JPG files are copied all together in one single folder. 
 
 - **Configuration parameters**:
     - "email": email address to be alerted in case of preprocessing failure
     - "sender": email address of the sender
-    - "smtphost": hostname of the machine hosting the smtp server
-    - "camerasfolder": path to the folder where the captures are rsynced from the French server
-    - "threadsnr": number of threads for performing a query on the DB
-    - "monthsnr": number of months to check the captures back
-    - "dbhost": fitsImporter local database hostname
-    - "dbuser": fitsImporter local database user
-    - "dbpwd": fitsImporter local database password
-    - "dbname": fitsImporter local database name
-    - "tbname": name of the captures table in the database
-    - "ingestfolder": path to the folder monitored by the inotify daemon of the fitsImporter
-    - "thumbsfolder": path to the folder where the thumbnails should be copied
+    - "smtp_host": smtp domain of the local machine sending the email 
+    - "rsync_folder": path to the folder where the captures are rsynced from the captures collection server
+    - "threads_nr": number of threads for performing a query on the DB
+    - "months_nr": number of months to check the captures back from now
+    - "db_host": hostname of the DB on which the datamodel is defined
+    - "db_user": name of the user that has access on the DB on which the datamodel is defined
+    - "db_pwd": password for accessing the DB on which the datamodel is defined
+    - "db_name": name of the DB containing the datamodel 
+    - "db_port": port on which the DB is listening
+    - "tb_name": name of the table containing the captures metadata
+    - "ingest_folder": path to the folder monitored by the inotify daemon of preProcessor
+    - "thumbs_folder": path to the folder where the thumbnails have to be copied
+
+- **Requirements**:
+    - pip3 install sqlalchemy 
 
 - **Usage**:
-    - python main.py
+    - python3 main.py

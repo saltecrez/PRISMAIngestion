@@ -47,7 +47,7 @@ class LoggingClass(object):
 
 class MissingConfParameter(Exception):
     def __init__(self, par):
-        #super().__init__(f"Parameter {par} not defined in configuration file")
+        super().__init__(f"Parameter {par} not defined in configuration file")
         self.par = par
 
 log = LoggingClass('',True).get_logger()

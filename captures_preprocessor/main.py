@@ -20,14 +20,14 @@ def main():
 
         rj = ReadJson()
         cam_path = rj.get_rsync_path()
-        mon_nr      = rj.get_months_number()
-        months_list = MonthsString(mon_nr).create_strings()
+        month_nr = rj.get_months_number()
+        months_list = MonthsString(month_nr).create_strings()
 
         cameras_path_list = CamerasPathList(cam_path).create_list()
-        # [/mnt/rsync_captures/ITER07/','/mnt/rsync_captures/ITLO01/']
 
         for camera in cameras_path_list:
             for month in months_list:
+                print(camera,month)
                 copyfits = ArchiveFITS(camera,month).copy_fits()
                 copyjpg = ArchiveFITS(camera,month).copy_jpg()
 

@@ -31,9 +31,9 @@ class LoggingClass(object):
         formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s','%Y-%m-%d %H:%M:%S')
 
         if self.create_file:
-                fh = logging.FileHandler('file.log')
-                fh.setLevel(level=logging.DEBUG)
-                fh.setFormatter(formatter)
+            fh = logging.FileHandler('file.log')
+            fh.setLevel(level=logging.DEBUG)
+            fh.setFormatter(formatter)
 
         ch = logging.StreamHandler()
         ch.setLevel(level=logging.DEBUG)

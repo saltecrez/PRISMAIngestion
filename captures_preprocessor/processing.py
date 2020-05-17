@@ -25,6 +25,7 @@ dbpwd  = rj.get_db_pwd()
 dbname = rj.get_db_name()
 dbhost = rj.get_db_host()
 dbport = rj.get_db_port()
+thr_nr = rj.get_threads_number()
 
 db      = MySQLDatabase(dbuser, dbpwd, dbname, dbhost, dbport)
 Session = db.mysql_session()
@@ -37,6 +38,11 @@ def _query_filename(filename):
     except Exception as e:
         msg = "Query on database excep - _query_filename --"
         log.error("{0}{1}".format(msg,e)) 
+    finally:
+        db.close_session()
+
+pool = multiprocessing.Pool(multiprocessing.cpu_count())
+pool = multiprocessing.Pool(processes=thr_nr)
 
 class CamerasPathList(object):
     def __init__(self, cameras_path):
@@ -60,7 +66,7 @@ class ArchiveFITS(object):
         self.month = month
         self.ingest_path = rj.get_ingestion_path()
         self.thumbs_path = rj.get_thumbs_path()
-        self.threads_nr  = rj.get_threads_number() 
+        #self.threads_nr  = rj.get_threads_number() 
         self.cameras_month_path = self.camera + self.month
     
     def _create_fitslist(self):
@@ -68,11 +74,13 @@ class ArchiveFITS(object):
         return self.fitslist
 
     def _multithreaded_select(self):
-        selects = [os.path.basename(i) + '.gz' for i in self._create_fitslist()]
-        pool = multiprocessing.Pool(multiprocessing.cpu_count())
-        pool = multiprocessing.Pool(processes=self.threads_nr)
-        not_found_in_db = pool.map_async(_query_filename, selects).get()
-        return not_found_in_db
+        try:
+            selects = [os.path.basename(i) + '.gz' for i in self._create_fitslist()]
+            not_found_in_db = pool.map_async(_query_filename, selects).get()
+            return not_found_in_db
+        except Exception as e:
+            msg = "Multithreaded query excep - _multithreaded_select --"
+            log.error("{0}{1}".format(msg,e))
 
     def copy_fits(self):
         not_found_in_db = self._multithreaded_select()
@@ -83,7 +91,6 @@ class ArchiveFITS(object):
                     path = self.cameras_month_path + '/' + name
                     try:
                         shutil.copy(path,os.path.join(self.ingest_path,name))
-                        print(name)
                     except shutil.Error as e:
                         msg = "Copy FITS excep -- ArchiveFITS.copy_fits --"
                         log.error("{0}{1}".format(msg,e))

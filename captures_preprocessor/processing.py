@@ -66,7 +66,6 @@ class ArchiveFITS(object):
         self.month = month
         self.ingest_path = rj.get_ingestion_path()
         self.thumbs_path = rj.get_thumbs_path()
-        #self.threads_nr  = rj.get_threads_number() 
         self.cameras_month_path = self.camera + self.month
     
     def _create_fitslist(self):
